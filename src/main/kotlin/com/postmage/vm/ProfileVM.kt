@@ -1,21 +1,9 @@
 package com.postmage.vm
 
-import com.fasterxml.jackson.databind.exc.MismatchedInputException
-import enums.ErrorStatus
-import io.javalin.http.Context
-import koin
-import kotlinx.coroutines.*
-import model.login.sign_in.SignInRequestModel
-import model.profile.get_my_profile.GetMyProfileInfoRequestModel
-import model.profile.user.UserProfileInfoModel
-import repo.ProfileRepository
-import repo.sendErrorData
-import util.CoroutineCustomExceptionHandler
-import java.lang.Exception
-import javax.naming.NotContextException
+import com.postmage.repo.ProfileRepository
 
 class ProfileVM(private val repository: ProfileRepository) {
-
+/*
     fun getMyProfileInfo(context: Context) {
         CoroutineScope(Dispatchers.Unconfined + CoroutineCustomExceptionHandler.handler).launch {
             try {
@@ -58,4 +46,6 @@ class ProfileVM(private val repository: ProfileRepository) {
             }
         }
     }
+
+ */
 }

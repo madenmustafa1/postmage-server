@@ -6,10 +6,10 @@ import com.postmage.service.login.LoginInterface
 import org.koin.core.module.Module
 import org.koin.dsl.module
 import com.postmage.repo.LoginRepository
-import repo.ProfileRepository
-import service.login.LoginService
-import service.profile.ProfileInterface
-import service.profile.ProfileService
+import com.postmage.repo.ProfileRepository
+import com.postmage.service.login.LoginService
+import com.postmage.service.profile.ProfileInterface
+import com.postmage.service.profile.ProfileService
 import com.postmage.vm.LoginVM
 import com.postmage.vm.ProfileVM
 

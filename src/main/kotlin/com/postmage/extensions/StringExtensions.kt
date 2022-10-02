@@ -22,8 +22,12 @@ fun String.verifyToken(vararg userRole: AppUserRole) = TokenUtil.verifyToken(
 )
 
 fun String.authToDataClass(): TokenDataModel? {
-    val gson = Gson()
-    return gson.fromJson(TokenUtil.decodeToken(this), TokenDataModel::class.java)
+    return try {
+        val gson = Gson()
+        gson.fromJson(TokenUtil.decodeToken(this), TokenDataModel::class.java)
+    } catch (e: Exception) {
+        null
+    }
 }
 
 

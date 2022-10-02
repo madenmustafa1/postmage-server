@@ -6,7 +6,7 @@ plugins {
     application
     kotlin("jvm") version "1.7.10"
     id("io.ktor.plugin") version "2.1.1"
-                id("org.jetbrains.kotlin.plugin.serialization") version "1.7.10"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.7.10"
 }
 
 group = "com.postmage"
@@ -35,23 +35,33 @@ dependencies {
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 
+    implementation("io.ktor:ktor-server-auth:$ktor_version")
+
+
     val kmongo_version: String by project
 
     // Inside the dependencies
     implementation("org.litote.kmongo:kmongo:$kmongo_version")
 
-    val koin_ktor: String by project
+    //val koin_ktor: String by project
+    val koin_ktor: String = "3.2.2"
     // Koin for Ktor
-    implementation ("io.insert-koin:koin-ktor:$koin_ktor")
+    implementation("io.insert-koin:koin-ktor:$koin_ktor")
     // SLF4J Logger
-    implementation ("io.insert-koin:koin-logger-slf4j:$koin_ktor")
+    implementation("io.insert-koin:koin-logger-slf4j:$koin_ktor")
+    // Koin Core features
+    implementation("io.insert-koin:koin-core:$koin_ktor")
+    // Koin Test features
+    testImplementation("io.insert-koin:koin-test:$koin_ktor")
 
     val koin_version = "3.2.2"
     // Koin Core features
-    implementation ("io.insert-koin:koin-core:$koin_version")
+    implementation("io.insert-koin:koin-core:$koin_version")
     // Koin Test features
-    testImplementation ("io.insert-koin:koin-test:$koin_version")
+    testImplementation("io.insert-koin:koin-test:$koin_version")
     implementation("io.insert-koin:koin-ksp-compiler-jvm:1.0.3")
 
-    implementation ("com.google.code.gson:gson:2.9.0")
+    implementation("com.google.code.gson:gson:2.9.0")
+
+    implementation("at.favre.lib:bcrypt:0.9.0")
 }

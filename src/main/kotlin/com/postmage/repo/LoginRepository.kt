@@ -10,8 +10,7 @@ import com.postmage.model.sign_up.SignUpResponseModel
 import com.postmage.service.ResponseData
 import com.postmage.service.login.LoginInterface
 import com.postmage.util.AppMessages
-import repo.sendErrorData
-import service.login.LoginService
+import com.postmage.service.login.LoginService
 
 class LoginRepository(
     private val longinService: LoginService,

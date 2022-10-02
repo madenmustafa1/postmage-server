@@ -1,13 +1,14 @@
-package repo
+package com.postmage.repo
 
-import enums.ErrorStatus
-import service.ErrorMessage
-import service.ResponseData
+import com.postmage.enums.StatusCodeUtil
+import com.postmage.service.ErrorMessage
+import com.postmage.service.ResponseData
 
-fun sendErrorData(message: String, statusCode: Int? = null) =
-    ResponseData.error(
+
+fun <T>sendErrorData(message: String, statusCode: Int? = null) =
+    ResponseData.error<T>(
         ErrorMessage(
             message = message,
-            statusCode = statusCode ?: ErrorStatus.SERVER_ERROR
+            statusCode = statusCode ?: StatusCodeUtil.SERVER_ERROR
         ), null
     )

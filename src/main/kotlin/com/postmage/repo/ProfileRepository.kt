@@ -1,13 +1,13 @@
-package repo
+package com.postmage.repo
 
-import extensions.authToDataClass
-import model.profile.get_my_profile.GetMyProfileInfoRequestModel
-import model.profile.user.FollowersDataModel
+import com.postmage.extensions.authToDataClass
+import com.postmage.service.ResponseData
+import com.postmage.util.AppMessages
+import com.postmage.model.profile.get_my_profile.GetMyProfileInfoRequestModel
+import com.postmage.model.profile.user.FollowersDataModel
 import model.profile.user.UserProfileInfoModel
-import service.ResponseData
-import service.profile.ProfileInterface
-import service.profile.ProfileService
-import util.AppMessages
+import com.postmage.service.profile.ProfileInterface
+import com.postmage.service.profile.ProfileService
 
 class ProfileRepository(
     private val profileService: ProfileService,

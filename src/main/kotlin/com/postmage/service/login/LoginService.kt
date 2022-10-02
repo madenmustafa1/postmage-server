@@ -1,24 +1,23 @@
-package service.login
+package com.postmage.service.login
 
 import at.favre.lib.crypto.bcrypt.BCrypt
 import com.google.gson.Gson
 import com.mongodb.BasicDBObject
 import com.mongodb.client.MongoCollection
-import com.postmage.service.login.LoginInterface
-import enums.AppUserRole
+import com.postmage.enums.AppUserRole
 import com.postmage.extensions.createToken
 import com.postmage.model.password.ChangePasswordModel
 import com.postmage.model.sign_in.SignInRequestModel
 import com.postmage.model.sign_in.SignInResponseModel
 import com.postmage.model.sign_up.SignUpRequestModel
 import com.postmage.model.sign_up.SignUpResponseModel
-import mongo_client.MongoInitialize
-import mongo_client.db_router.DBRouter
+import com.postmage.mongo_client.MongoInitialize
+import com.postmage.mongo_client.db_router.DBRouter
 import org.bson.Document
 import org.bson.types.ObjectId
 import com.postmage.service.ErrorMessage
 import com.postmage.service.ResponseData
-import util.AppMessages
+import com.postmage.util.AppMessages
 
 
 class LoginService(
@@ -28,21 +27,23 @@ class LoginService(
 
     override suspend fun singIn(signInRequestModel: SignInRequestModel): ResponseData<SignInResponseModel?> {
         try {
-            val collection: MongoCollection<Document> = mongoDB.getDB()!!.getCollection(DBRouter.USERS)
+            val collection: MongoCollection<Document> = mongoDB.getDB().getCollection(DBRouter.USERS)
             val query = BasicDBObject("mail", signInRequestModel.mail!!)
+
+            var result: ResponseData<SignInResponseModel?>? = null
 
             collection.find(query).limit(1).forEach {
                 val gson = Gson()
                 val model = gson.fromJson(it.toJson(), SignUpRequestModel::class.java)
 
                 //Verify
-                val result = BCrypt.verifyer().verify(signInRequestModel.password!!.toCharArray(), model.password)
-                if (result.verified) {
+                val bcryptResult = BCrypt.verifyer().verify(signInRequestModel.password!!.toCharArray(), model.password)
+                if (bcryptResult.verified) {
                     val token = signInRequestModel.mail.createToken(
                         model.userId.toString(),
                         userRole = AppUserRole.values()[model.userRole ?: AppUserRole.USER.ordinal]
                     )
-                    return ResponseData.success(
+                    result = ResponseData.success(
                         SignInResponseModel(
                             token = token,
                             isSuccess = true,
@@ -51,6 +52,8 @@ class LoginService(
                     )
                 }
             }
+            result?.let { return it }
+
 
             return ResponseData.error(ErrorMessage(appMessages.EMAIL_OR_PASSWORD_INCORRECT, statusCode = 404), null)
         } catch (e: Exception) {
