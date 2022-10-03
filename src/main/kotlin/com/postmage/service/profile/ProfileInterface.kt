@@ -2,7 +2,7 @@ package com.postmage.service.profile
 
 import com.postmage.model.profile.get_my_profile.GetMyProfileInfoRequestModel
 import com.postmage.model.profile.user.FollowersDataModel
-import model.profile.user.UserProfileInfoModel
+import com.postmage.model.profile.user.UserProfileInfoModel
 import com.postmage.service.ResponseData
 
 interface ProfileInterface {

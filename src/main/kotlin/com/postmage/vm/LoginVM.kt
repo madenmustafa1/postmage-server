@@ -2,9 +2,10 @@ package com.postmage.vm
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.postmage.enums.StatusCodeUtil
-import com.postmage.koin
+import com.postmage.model.password.ChangePasswordModel
 import com.postmage.model.sign_in.SignInRequestModel
 import com.postmage.model.sign_up.SignUpRequestModel
+import com.postmage.plugins.koin
 import com.postmage.repo.LoginRepository
 import com.postmage.repo.sendErrorData
 import com.postmage.service.ErrorMessage
@@ -24,9 +25,8 @@ class LoginVM(
 ) {
 
     fun signIn(call: ApplicationCall) {
-        CoroutineScope(Dispatchers.IO + CoroutineCustomExceptionHandler.handler).launch {
+        CoroutineScope(Dispatchers.Unconfined + CoroutineCustomExceptionHandler.handler).launch {
             try {
-
                 val body = call.receive<SignInRequestModel>()
                 val result = repository.singIn(body)
                 result.data?.let {
@@ -83,12 +83,12 @@ class LoginVM(
             }
         }
     }
-    /*
-    fun changePassword(context: Context) {
+
+    fun changePassword(call: ApplicationCall) {
         CoroutineScope(Dispatchers.Unconfined).launch {
             repository.changePassword(ChangePasswordModel("", "", "", ""))
         }
     }
-     */
+
 
 }

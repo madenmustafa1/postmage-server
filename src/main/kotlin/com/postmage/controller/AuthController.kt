@@ -2,10 +2,9 @@ package com.postmage.controller
 
 import com.postmage.enums.AppUserRole
 import com.postmage.extensions.verifyToken
-import com.postmage.koin
+import com.postmage.plugins.koin
 import com.postmage.repo.sendErrorData
 import com.postmage.service.ErrorMessage
-import com.postmage.service.ResponseData
 import com.postmage.util.GsonUtil
 import io.ktor.http.*
 import io.ktor.server.application.*

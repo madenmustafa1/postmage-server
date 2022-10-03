@@ -18,6 +18,9 @@ import org.bson.types.ObjectId
 import com.postmage.service.ErrorMessage
 import com.postmage.service.ResponseData
 import com.postmage.util.AppMessages
+import kotlinx.serialization.Serializable
+import org.bson.codecs.pojo.annotations.BsonId
+import org.litote.kmongo.Id
 
 
 class LoginService(
@@ -65,7 +68,7 @@ class LoginService(
 
     override suspend fun singUp(signUpRequestModel: SignUpRequestModel): ResponseData<SignUpResponseModel?> {
         return try {
-            val collection: MongoCollection<Document> = mongoDB.getDB()!!.getCollection(DBRouter.USERS)
+            val collection = mongoDB.getDB().getCollection(DBRouter.USERS)
 
             val query = BasicDBObject("mail", signUpRequestModel.mail)
             repeat(collection.find(query).limit(1).count()) {
@@ -89,7 +92,6 @@ class LoginService(
                 .append("followingSize", 0)
                 .append("group", arrayListOf<String>())
 
-
             collection.insertOne(document)
 
             ResponseData.success(
@@ -105,7 +107,7 @@ class LoginService(
     }
 
     override suspend fun changePassword(changePasswordModel: ChangePasswordModel): Boolean {
-        println("LoginService " + (mongoDB.getDB() == null))
+        println("LoginService " + (false))
         return false
     }
 

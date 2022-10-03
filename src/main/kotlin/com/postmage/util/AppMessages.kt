@@ -14,6 +14,4 @@ class AppMessages {
     val UNAUTHORIZED by lazy { "Unauthorized." }
 
     val USER_ID_NOT_BE_NULL by lazy { "userId cannot be null." }
-
-
 }

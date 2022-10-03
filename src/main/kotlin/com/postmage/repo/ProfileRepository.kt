@@ -5,7 +5,7 @@ import com.postmage.service.ResponseData
 import com.postmage.util.AppMessages
 import com.postmage.model.profile.get_my_profile.GetMyProfileInfoRequestModel
 import com.postmage.model.profile.user.FollowersDataModel
-import model.profile.user.UserProfileInfoModel
+import com.postmage.model.profile.user.UserProfileInfoModel
 import com.postmage.service.profile.ProfileInterface
 import com.postmage.service.profile.ProfileService
 

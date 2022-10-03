@@ -1,14 +1,10 @@
 package com.postmage.service.profile
 
-import com.google.gson.Gson
 import com.mongodb.BasicDBObject
-import com.mongodb.client.MongoCollection
 import com.postmage.model.profile.get_my_profile.GetMyProfileInfoRequestModel
 import com.postmage.model.profile.user.FollowersDataModel
 import com.postmage.mongo_client.MongoInitialize
-import com.postmage.mongo_client.db_router.DBRouter
-import model.profile.user.UserProfileInfoModel
-import org.bson.Document
+import com.postmage.model.profile.user.UserProfileInfoModel
 import com.postmage.repo.sendErrorData
 import com.postmage.service.ResponseData
 import com.postmage.util.AppMessages
@@ -18,15 +14,13 @@ class ProfileService(
     private val appMessages: AppMessages
 ) : ProfileInterface {
     override suspend fun getMyProfileInfo(userId: String): ResponseData<UserProfileInfoModel?> {
-        val collection: MongoCollection<Document> = mongoDB.getDB().getCollection(DBRouter.USERS)
+        val collection = mongoDB.getUserCollection
         val query = BasicDBObject("userId", userId)
 
         var result: ResponseData<UserProfileInfoModel?>? = null
 
         collection.find(query).limit(1).forEach {
-            val gson = Gson()
-            val model = gson.fromJson(it.toJson(), UserProfileInfoModel::class.java)
-            result =  ResponseData.success(model)
+            result =  ResponseData.success(it)
         }
         result?.let { return it }
 
@@ -34,20 +28,21 @@ class ProfileService(
     }
 
     override suspend fun putMyProfileInfo(userId: String, body: UserProfileInfoModel): ResponseData<Boolean> {
-        val collection: MongoCollection<Document> = mongoDB.getDB()!!.getCollection(DBRouter.USERS)
+        //val collection: MongoCollection<Document> = mongoDB.getDB()!!.getCollection(DBRouter.USERS)
+        val collection = mongoDB.getUserCollection
         val query = BasicDBObject("userId", userId)
 
         var result: ResponseData<Boolean>? = null
 
         collection.find(query).limit(1).forEach {
-            body.group?.let { group -> it["group"] = group }
-            body.gender?.let { gender -> it["gender"] = gender }
-            body.phoneNumber?.let { phoneNumber -> it["phoneNumber"] = phoneNumber }
-            body.nameSurname?.let { nameSurname -> it["nameSurname"] = nameSurname }
-            body.followingSize?.let { followingSize -> it["followingSize"] = followingSize }
-            body.followersSize?.let { followersSize -> it["followersSize"] = followersSize }
-            body.profilePhotoUrl?.let { profilePhotoUrl -> it["profilePhotoUrl"] = profilePhotoUrl }
-            collection.replaceOne(query, it);
+            body.group?.let { group -> it.group = group }
+            body.gender?.let { gender -> it.gender = gender }
+            body.phoneNumber?.let { phoneNumber -> it.phoneNumber = phoneNumber }
+            body.nameSurname?.let { nameSurname -> it.nameSurname = nameSurname }
+            body.followingSize?.let { followingSize -> it.followingSize = followingSize }
+            body.followersSize?.let { followersSize -> it.followersSize = followersSize }
+            body.profilePhotoUrl?.let { profilePhotoUrl -> it.profilePhotoUrl = profilePhotoUrl }
+            collection.replaceOne(query, it)
             result = ResponseData.success(true)
         }
         result?.let { return it }
