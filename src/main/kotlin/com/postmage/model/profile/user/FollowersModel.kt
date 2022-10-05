@@ -1,14 +1,22 @@
 package com.postmage.model.profile.user
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class SingleFollowerDataModel(
     val nameSurname: String,
-    val userID: String,
-    val photoURL: String?
+    val userId: String,
+    val photoUrl: String? = null
 )
 
-data class FollowersDataModel(
-    val following: ArrayList<SingleFollowerDataModel>,
-    val followers: ArrayList<SingleFollowerDataModel>,
-    val mail: String?,
-    val userID: String?
+@Serializable
+data class GetFollowersDataModel(
+    val following: ArrayList<SingleFollowerDataModel>? = null,
+    val followers: ArrayList<SingleFollowerDataModel>? = null,
+)
+
+@Serializable
+data class SetFollowersDataModel(
+    val following: SingleFollowerDataModel? = null,
+    val followers: SingleFollowerDataModel? = null,
 )

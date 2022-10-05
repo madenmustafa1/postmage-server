@@ -1,8 +1,7 @@
 package com.postmage.service.profile
 
-import com.postmage.model.profile.get_my_profile.GetMyProfileInfoRequestModel
-import com.postmage.model.profile.user.FollowersDataModel
-import com.postmage.model.profile.user.SingleFollowerDataModel
+import com.postmage.model.profile.user.GetFollowersDataModel
+import com.postmage.model.profile.user.SetFollowersDataModel
 import com.postmage.model.profile.user.UserProfileInfoModel
 import com.postmage.service.ResponseData
 
@@ -12,8 +11,8 @@ interface ProfileInterface {
 
     suspend fun putMyProfileInfo(userId: String, body: UserProfileInfoModel): ResponseData<Boolean>
 
-    suspend fun getMyFollowerData(userId: String): ResponseData<ArrayList<SingleFollowerDataModel?>>
+    suspend fun getMyFollowerData(userId: String): ResponseData<GetFollowersDataModel>
 
-    suspend fun putMyFollowerData(userId: String, body: ArrayList<SingleFollowerDataModel?>): ResponseData<Boolean>
+    suspend fun putMyFollowerData(userId: String, body: SetFollowersDataModel): ResponseData<Boolean>
 
 }
