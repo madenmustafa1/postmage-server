@@ -41,6 +41,14 @@ fun Application.configureRouting() {
                         }
                     }
                 }
+
+                get(MY_FOLLOWER) {
+                    accessManager(call, role = userRouteRole().toTypedArray()) {
+                        CoroutineScope(Dispatchers.Unconfined).launch {
+                            koin.profileVM.getMyFollowerData(call)
+                        }
+                    }
+                }
             }
         }
     }

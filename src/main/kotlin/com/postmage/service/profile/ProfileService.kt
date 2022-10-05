@@ -3,6 +3,7 @@ package com.postmage.service.profile
 import com.mongodb.BasicDBObject
 import com.postmage.model.profile.get_my_profile.GetMyProfileInfoRequestModel
 import com.postmage.model.profile.user.FollowersDataModel
+import com.postmage.model.profile.user.SingleFollowerDataModel
 import com.postmage.mongo_client.MongoInitialize
 import com.postmage.model.profile.user.UserProfileInfoModel
 import com.postmage.repo.sendErrorData
@@ -28,7 +29,6 @@ class ProfileService(
     }
 
     override suspend fun putMyProfileInfo(userId: String, body: UserProfileInfoModel): ResponseData<Boolean> {
-        //val collection: MongoCollection<Document> = mongoDB.getDB()!!.getCollection(DBRouter.USERS)
         val collection = mongoDB.getUserCollection
         val query = BasicDBObject("userId", userId)
 
@@ -51,13 +51,12 @@ class ProfileService(
     }
 
     override suspend fun getMyFollowerData(
-        userId: String,
-        body: GetMyProfileInfoRequestModel
-    ): ResponseData<FollowersDataModel?> {
+        userId: String
+    ): ResponseData<ArrayList<SingleFollowerDataModel?>> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun putMyFollowerData(userId: String, body: FollowersDataModel): ResponseData<Boolean> {
+    override suspend fun putMyFollowerData(userId: String, body: ArrayList<SingleFollowerDataModel?>): ResponseData<Boolean> {
         TODO("Not yet implemented")
     }
 }
