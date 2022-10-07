@@ -1,6 +1,5 @@
 package com.postmage.vm
 
-import com.postmage.repo.LoginRepository
 import com.postmage.repo.ProfileRepository
 import com.postmage.util.AppMessages
 import com.postmage.util.Directory
