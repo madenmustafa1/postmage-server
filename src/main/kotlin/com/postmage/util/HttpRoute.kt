@@ -13,4 +13,8 @@ object HttpRoute {
     const val PROFILE = "/profile"
     const val MY_PROFILE: String = "/my-profile"
     const val MY_FOLLOWER: String = "/my-follower-data"
+
+    //Posts
+    const val POSTS = "/user-posts"
+    const val ADD_POSTS = "/add-posts"
 }

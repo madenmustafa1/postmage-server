@@ -12,6 +12,7 @@ import com.postmage.service.profile.ProfileInterface
 import com.postmage.service.profile.ProfileService
 import com.postmage.vm.LoginVM
 import com.postmage.vm.ProfileVM
+import com.postmage.vm.UserPostsVM
 import org.koin.core.scope.get
 
 fun injectModule(): Module {
@@ -31,5 +32,6 @@ fun injectModule(): Module {
         //By VM
         single<LoginVM> { LoginVM(LoginRepository(longinService = get(), appMessages = get())) }
         single<ProfileVM> { ProfileVM(ProfileRepository(profileService = get(), appMessages = get()), get()) }
+        single<UserPostsVM> { UserPostsVM(ProfileRepository(profileService = get(), appMessages = get()), get()) }
     }
 }

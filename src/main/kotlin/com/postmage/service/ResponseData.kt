@@ -13,14 +13,12 @@ data class ResponseData<T>(
             return ResponseData(Status.SUCCESS, data, null)
         }
 
-
         fun <T> error(
             msg: ErrorMessage,
             data: T?
         ): ResponseData<T> {
             return ResponseData(Status.ERROR, data, msg)
         }
-
     }
 }
 

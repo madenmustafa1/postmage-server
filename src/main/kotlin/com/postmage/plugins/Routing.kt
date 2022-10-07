@@ -3,16 +3,20 @@ package com.postmage.plugins
 import com.postmage.controller.accessManager
 import com.postmage.dependecy_injection.KoinApplication
 import com.postmage.enums.userRouteRole
+import com.postmage.extensions.makeFolder
+import com.postmage.util.Directory
 import com.postmage.util.HttpRoute
-import io.ktor.server.routing.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
+import io.ktor.server.routing.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 val koin = KoinApplication()
+
 fun Application.configureRouting() {
+    Directory.usersFile.makeFolder("users")
 
     with(HttpRoute) {
         routing {
@@ -56,6 +60,13 @@ fun Application.configureRouting() {
                             koin.profileVM.putMyFollowerData(call)
                         }
                     }
+                }
+            }
+
+            //Posts
+            route(POSTS) {
+                post(ADD_POSTS) {
+                    koin.usersPostsVM.addPost(call)
                 }
             }
         }

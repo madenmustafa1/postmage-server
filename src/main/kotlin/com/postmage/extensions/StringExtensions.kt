@@ -6,6 +6,8 @@ import com.postmage.enums.AppUserRole
 import com.postmage.util.PatternUtil
 import com.postmage.util.TokenUtil
 import com.postmage.model.token.TokenDataModel
+import com.postmage.util.Directory
+import java.nio.file.Paths
 
 
 fun String.isValidEmail() = PatternUtil.EMAIL_ADDRESS.matcher(this).matches()
@@ -30,6 +32,11 @@ fun String.authToDataClass(): TokenDataModel? {
     }
 }
 
+fun String.makeFolder(folderName: String?): Boolean {
+    val homeFolder = System.getProperty("user.home")
+    Directory.userDesktopDir = Paths.get(homeFolder, "Desktop", folderName).toFile()
+    return Directory.userDesktopDir?.mkdir() ?: false
+}
 
 
 
