@@ -14,4 +14,8 @@ class AppMessages {
     val UNAUTHORIZED by lazy { "Unauthorized." }
 
     val USER_ID_NOT_BE_NULL by lazy { "userId cannot be null." }
+
+    val PHOTO_CANNOT_BE_EMPTY by lazy { "Photo cannot be empty" }
+    val PHOTO_NAME_CANNOT_BE_EMPTY by lazy { "Photo name cannot be empty" }
+    val PHOTO_NAME_NOT_UNIQUE by lazy { "Photo name already exits" }
 }

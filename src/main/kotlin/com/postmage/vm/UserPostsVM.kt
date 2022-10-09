@@ -1,50 +1,78 @@
 package com.postmage.vm
 
-import com.postmage.repo.ProfileRepository
+import com.fasterxml.jackson.databind.exc.MismatchedInputException
+import com.postmage.enums.StatusCodeUtil
+import com.postmage.model.posts.add_posts.AddPostModel
+import com.postmage.plugins.koin
+import com.postmage.repo.UserPostRepository
 import com.postmage.util.AppMessages
-import com.postmage.util.Directory
+import com.postmage.util.UuidUtil
+import com.postmage.util.sendException
+import io.ktor.http.*
 import io.ktor.http.content.*
 import io.ktor.server.application.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import java.io.File
 
 class UserPostsVM(
-    private val repository: ProfileRepository,
+    private val repository: UserPostRepository,
     private val appMessages: AppMessages
 ) {
 
     suspend fun addPost(call: ApplicationCall) {
-        var fileDescription = ""
-        var fileName = ""
-
-        val multipartData = call.receiveMultipart()
-
-        multipartData.forEachPart { part ->
-            when (part) {
-                is PartData.FormItem -> {
-                    fileDescription = part.value
-                }
-
-                is PartData.FileItem -> {
-                    fileName = part.originalFileName as String
-                    val photoDir = File(Directory.userDesktopDir?.path, fileName)
-
-                    if (withContext(Dispatchers.IO) {
-                            photoDir.createNewFile()
-                        }) {
-                        println("File created: " + photoDir.name)
-
-                        val fileBytes = part.streamProvider().readBytes()
-                        File(Directory.userDesktopDir?.path, fileName).writeBytes(fileBytes)
+        try {
+            val model = AddPostModel()
+            
+            val multipartData = call.receiveMultipart()
+            multipartData.forEachPart { part ->
+                when (part) {
+                    is PartData.FormItem -> {
+                        when (part.name) {
+                            "description" -> model.description = part.value
+                            "groupId" -> model.groupId = part.value
+                        }
                     }
-                }
-                else -> {}
-            }
-        }
-        call.respondText("$fileDescription is uploaded to 'uploads/$fileName'")
 
+                    is PartData.FileItem -> {
+                        model.photoName = UuidUtil.createUuid().toString() + part.originalFileName as String
+                        model.photoBytes = part.streamProvider().readBytes()
+                    }
+                    else -> {}
+                }
+            }
+
+            val result = repository.addPost(call.request.headers["Authorization"]!!, model)
+
+            result.data?.let {
+                call.respond(it)
+                call.response.status(HttpStatusCode.OK)
+                return
+            }
+
+            sendException(
+                call = call,
+                statusCode = result.message?.statusCode ?: 500,
+                errorMessage = result.message?.message ?: ""
+            )
+
+        } catch (e: NullPointerException) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.UNAUTHORIZED,
+                errorMessage = koin.appMessages.UNAUTHORIZED
+            )
+        } catch (e: MismatchedInputException) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.BAD_REQUEST,
+                errorMessage = koin.appMessages.MODEL_IS_NOT_VALID
+            )
+        } catch (e: Exception) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.SERVER_ERROR,
+                errorMessage = appMessages.SERVER_ERROR
+            )
+        }
     }
 }

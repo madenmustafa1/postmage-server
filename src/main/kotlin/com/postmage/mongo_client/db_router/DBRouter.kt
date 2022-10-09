@@ -6,4 +6,6 @@ object DBRouter {
     const val USERS = "users"
     const val HOME = "home"
     const val PROFILE = "profile"
+
+    const val USERS_POSTS = "users-posts"
 }

@@ -1,6 +1,7 @@
 package com.postmage.mongo_client
 
 import com.mongodb.client.MongoDatabase
+import com.postmage.model.posts.get_posts.GetUserPostModel
 import com.postmage.model.profile.user.UserProfileInfoModel
 import com.postmage.model.sign_up.SignUpRequestModel
 import com.postmage.mongo_client.db_router.DBRouter
@@ -13,6 +14,7 @@ class MongoInitialize {
 
     val getUserCollection = database.getCollection<UserProfileInfoModel>(DBRouter.USERS)
     val signUpUserCollection = database.getCollection<SignUpRequestModel>(DBRouter.USERS)
+    val getUsersPostsCollection = database.getCollection<GetUserPostModel>(DBRouter.USERS_POSTS)
 
     fun getDB(): MongoDatabase = database
 

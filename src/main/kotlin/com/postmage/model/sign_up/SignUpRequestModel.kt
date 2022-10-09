@@ -3,6 +3,8 @@ package com.postmage.model.sign_up
 import com.postmage.enums.AppUserRole
 import com.postmage.model.profile.user.SingleFollowerDataModel
 import kotlinx.serialization.Serializable
+import java.util.*
+import kotlin.collections.ArrayList
 
 @Serializable
 data class SignUpRequestModel(
@@ -17,4 +19,5 @@ data class SignUpRequestModel(
     val following: ArrayList<SingleFollowerDataModel> = arrayListOf(),
     val followers: ArrayList<SingleFollowerDataModel> = arrayListOf(),
     val group: ArrayList<String> = arrayListOf(),
+    val creationTime: Long? = Calendar.getInstance(Locale.getDefault()).timeInMillis,
 )
