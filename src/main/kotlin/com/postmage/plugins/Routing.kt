@@ -33,24 +33,18 @@ fun Application.configureRouting() {
             route (PROFILE) {
                 get(MY_PROFILE) {
                     accessManager(call, role = userRouteRole().toTypedArray()) {
-                        CoroutineScope(Dispatchers.Unconfined).launch {
-                            koin.profileVM.getMyProfileInfo(call)
-                        }
+                        koin.profileVM.getMyProfileInfo(call)
                     }
                 }
                 put(MY_PROFILE) {
                     accessManager(call, role = userRouteRole().toTypedArray()) {
-                        CoroutineScope(Dispatchers.Unconfined).launch {
-                            koin.profileVM.putMyProfileInfo(call)
-                        }
+                        koin.profileVM.putMyProfileInfo(call)
                     }
                 }
 
                 get(MY_FOLLOWER) {
                     accessManager(call, role = userRouteRole().toTypedArray()) {
-                        CoroutineScope(Dispatchers.Unconfined).launch {
-                            koin.profileVM.getMyFollowerData(call)
-                        }
+                        koin.profileVM.getMyFollowerData(call)
                     }
                 }
 
@@ -61,12 +55,31 @@ fun Application.configureRouting() {
                         }
                     }
                 }
+
+
             }
 
             //Posts
             route(POSTS) {
                 post(ADD_POSTS) {
-                    koin.usersPostsVM.addPost(call)
+                    accessManager(call, role = userRouteRole().toTypedArray()) {
+                        koin.usersPostsVM.addPost(call)
+                    }
+                }
+
+                get(MY_POSTS) {
+                    accessManager(call, role = userRouteRole().toTypedArray()) {
+                        koin.usersPostsVM.getMyPost(call)
+                    }
+                }
+            }
+
+            //Image
+            route(IMAGE) {
+                get(DOWNLOAD) {
+                    accessManager(call, role = userRouteRole().toTypedArray()) {
+                        koin.usersPostsVM.addPost(call)
+                    }
                 }
             }
         }

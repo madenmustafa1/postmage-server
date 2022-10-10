@@ -24,70 +24,64 @@ class LoginVM(
     private val repository: LoginRepository
 ) {
 
-    fun signIn(call: ApplicationCall) {
-        CoroutineScope(Dispatchers.Unconfined + CoroutineCustomExceptionHandler.handler).launch {
-            try {
-                val body = call.receive<SignInRequestModel>()
-                val result = repository.singIn(body)
-                result.data?.let {
-                    call.respond(it)
-                    call.response.status(HttpStatusCode.OK)
-                    return@launch
-                }
-
-                call.response.status(StatusCodeUtil.errHandle(result.message?.statusCode ?: 500))
-                call.respond(result.message ?: "")
-            } catch (e: MismatchedInputException) {
-                call.response.status(StatusCodeUtil.errHandle(StatusCodeUtil.BAD_REQUEST))
-                call.respond(
-                    GsonUtil.gsonToJson(
-                        sendErrorData<ErrorMessage>(koin.appMessages.MODEL_IS_NOT_VALID, StatusCodeUtil.BAD_REQUEST)
-                    )
-                )
-            } catch (e: Exception) {
-                call.response.status(StatusCodeUtil.errHandle(StatusCodeUtil.SERVER_ERROR))
-                call.respond(
-                    GsonUtil.gsonToJson(
-                        sendErrorData<ErrorMessage>(koin.appMessages.SERVER_ERROR)
-                    )
-                )
+    suspend fun signIn(call: ApplicationCall) {
+        try {
+            val body = call.receive<SignInRequestModel>()
+            val result = repository.singIn(body)
+            result.data?.let {
+                call.respond(it)
+                call.response.status(HttpStatusCode.OK)
+                return
             }
+
+            call.response.status(StatusCodeUtil.errHandle(result.message?.statusCode ?: 500))
+            call.respond(result.message ?: "")
+        } catch (e: MismatchedInputException) {
+            call.response.status(StatusCodeUtil.errHandle(StatusCodeUtil.BAD_REQUEST))
+            call.respond(
+                GsonUtil.gsonToJson(
+                    sendErrorData<ErrorMessage>(koin.appMessages.MODEL_IS_NOT_VALID, StatusCodeUtil.BAD_REQUEST)
+                )
+            )
+        } catch (e: Exception) {
+            call.response.status(StatusCodeUtil.errHandle(StatusCodeUtil.SERVER_ERROR))
+            call.respond(
+                GsonUtil.gsonToJson(
+                    sendErrorData<ErrorMessage>(koin.appMessages.SERVER_ERROR)
+                )
+            )
         }
     }
 
-    fun signUp(call: ApplicationCall) {
-        CoroutineScope(Dispatchers.Unconfined + CoroutineCustomExceptionHandler.handler).launch {
-            try {
-                val body = call.receive<SignUpRequestModel>()
-                val result = repository.singUp(body)
-                (result.message ?: result.data)?.let { call.respond(it) }
-                if (result.status == Status.SUCCESS) {
-                    call.response.status(HttpStatusCode.OK)
-                    return@launch
-                }
-                call.response.status(StatusCodeUtil.errHandle(result.message?.statusCode ?: 500))
-            } catch (e: MismatchedInputException) {
-                call.response.status(StatusCodeUtil.errHandle(StatusCodeUtil.BAD_REQUEST))
-                call.respond(
-                    GsonUtil.gsonToJson(
-                        sendErrorData<ErrorMessage>(koin.appMessages.MODEL_IS_NOT_VALID, StatusCodeUtil.BAD_REQUEST)
-                    )
-                )
-            } catch (e: Exception) {
-                call.response.status(StatusCodeUtil.errHandle(StatusCodeUtil.SERVER_ERROR))
-                call.respond(
-                    GsonUtil.gsonToJson(
-                        sendErrorData<ErrorMessage>(koin.appMessages.SERVER_ERROR)
-                    )
-                )
+    suspend fun signUp(call: ApplicationCall) {
+        try {
+            val body = call.receive<SignUpRequestModel>()
+            val result = repository.singUp(body)
+            (result.message ?: result.data)?.let { call.respond(it) }
+            if (result.status == Status.SUCCESS) {
+                call.response.status(HttpStatusCode.OK)
+                return
             }
+            call.response.status(StatusCodeUtil.errHandle(result.message?.statusCode ?: 500))
+        } catch (e: MismatchedInputException) {
+            call.response.status(StatusCodeUtil.errHandle(StatusCodeUtil.BAD_REQUEST))
+            call.respond(
+                GsonUtil.gsonToJson(
+                    sendErrorData<ErrorMessage>(koin.appMessages.MODEL_IS_NOT_VALID, StatusCodeUtil.BAD_REQUEST)
+                )
+            )
+        } catch (e: Exception) {
+            call.response.status(StatusCodeUtil.errHandle(StatusCodeUtil.SERVER_ERROR))
+            call.respond(
+                GsonUtil.gsonToJson(
+                    sendErrorData<ErrorMessage>(koin.appMessages.SERVER_ERROR)
+                )
+            )
         }
     }
 
-    fun changePassword(call: ApplicationCall) {
-        CoroutineScope(Dispatchers.Unconfined).launch {
-            repository.changePassword(ChangePasswordModel("", "", "", ""))
-        }
+    suspend fun changePassword(call: ApplicationCall) {
+        repository.changePassword(ChangePasswordModel("", "", "", ""))
     }
 
 

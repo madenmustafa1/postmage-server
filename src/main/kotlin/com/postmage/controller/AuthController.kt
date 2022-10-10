@@ -14,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 
-fun accessManager(call: ApplicationCall, vararg role: AppUserRole, accessRoute: () -> Unit) {
+suspend fun accessManager(call: ApplicationCall, vararg role: AppUserRole, accessRoute: suspend() -> Unit) {
     val header = call.request.headers["Authorization"] ?: return sendAuthStatus(call)
     val res = header.verifyToken(userRole = role)
     if (!res) return sendAuthStatus(call)

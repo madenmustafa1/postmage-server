@@ -3,6 +3,7 @@ package com.postmage.repo
 import com.postmage.enums.StatusCodeUtil
 import com.postmage.extensions.authToDataClass
 import com.postmage.model.posts.add_posts.AddPostModel
+import com.postmage.model.posts.get_posts.GetUserPostModel
 import com.postmage.service.ResponseData
 import com.postmage.service.user_posts.UserPostsInterface
 import com.postmage.service.user_posts.UserPostsService
@@ -43,5 +44,9 @@ class UserPostRepository(
                 statusCode = StatusCodeUtil.SERVER_ERROR
             )
         }
+    }
+
+    override suspend fun getMyPost(userId: String): ResponseData<List<GetUserPostModel>> {
+        return userPostsService.getMyPost(userId.authToDataClass()!!.userId)
     }
 }

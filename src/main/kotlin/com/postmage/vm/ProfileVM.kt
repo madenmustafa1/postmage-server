@@ -23,140 +23,132 @@ class ProfileVM(
     private val appMessages: AppMessages
 ) {
 
-    fun getMyProfileInfo(call: ApplicationCall) {
-        CoroutineScope(Dispatchers.Unconfined + CoroutineCustomExceptionHandler.handler).launch {
-            try {
-                val result = repository.getMyProfileInfo(call.request.headers["Authorization"]!!)
-                result.data?.let {
-                    call.respond(it)
-                    call.response.status(HttpStatusCode.OK)
-                    return@launch
-                }
-                sendException(
-                    call = call,
-                    statusCode = result.message?.statusCode ?: 500,
-                    errorMessage = result.message?.message ?: ""
-                )
-            } catch (e: NullPointerException) {
-                sendException(
-                    call = call,
-                    statusCode = StatusCodeUtil.UNAUTHORIZED,
-                    errorMessage = koin.appMessages.UNAUTHORIZED
-                )
-            } catch (e: Exception) {
-                sendException(
-                    call = call,
-                    statusCode = StatusCodeUtil.SERVER_ERROR,
-                    errorMessage = koin.appMessages.SERVER_ERROR
-                )
+    suspend fun getMyProfileInfo(call: ApplicationCall) {
+        try {
+            val result = repository.getMyProfileInfo(call.request.headers["Authorization"]!!)
+            result.data?.let {
+                call.respond(it)
+                call.response.status(HttpStatusCode.OK)
+                return
             }
+            sendException(
+                call = call,
+                statusCode = result.message?.statusCode ?: 500,
+                errorMessage = result.message?.message ?: ""
+            )
+        } catch (e: NullPointerException) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.UNAUTHORIZED,
+                errorMessage = koin.appMessages.UNAUTHORIZED
+            )
+        } catch (e: Exception) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.SERVER_ERROR,
+                errorMessage = koin.appMessages.SERVER_ERROR
+            )
         }
     }
 
-    fun putMyProfileInfo(call: ApplicationCall) {
-        CoroutineScope(Dispatchers.Unconfined + CoroutineCustomExceptionHandler.handler).launch {
-            try {
-                val body = call.receive<UserProfileInfoModel>()
-                val result = repository.putMyProfileInfo(call.request.headers["Authorization"]!!, body)
+    suspend fun putMyProfileInfo(call: ApplicationCall) {
+        try {
+            val body = call.receive<UserProfileInfoModel>()
+            val result = repository.putMyProfileInfo(call.request.headers["Authorization"]!!, body)
 
-                result.data?.let {
-                    call.respond(it)
-                    call.response.status(HttpStatusCode.OK)
-                    return@launch
-                }
-                sendException(
-                    call = call,
-                    statusCode = result.message?.statusCode ?: 500,
-                    errorMessage = result.message?.message ?: ""
-                )
-            } catch (e: NullPointerException) {
-                sendException(
-                    call = call,
-                    statusCode = StatusCodeUtil.UNAUTHORIZED,
-                    errorMessage = koin.appMessages.UNAUTHORIZED
-                )
-            } catch (e: MismatchedInputException) {
-                sendException(
-                    call = call,
-                    statusCode = StatusCodeUtil.BAD_REQUEST,
-                    errorMessage = koin.appMessages.MODEL_IS_NOT_VALID
-                )
-            } catch (e: Exception) {
-                sendException(
-                    call = call,
-                    statusCode = StatusCodeUtil.SERVER_ERROR,
-                    errorMessage = koin.appMessages.SERVER_ERROR
-                )
+            result.data?.let {
+                call.respond(it)
+                call.response.status(HttpStatusCode.OK)
+                return
             }
+            sendException(
+                call = call,
+                statusCode = result.message?.statusCode ?: 500,
+                errorMessage = result.message?.message ?: ""
+            )
+        } catch (e: NullPointerException) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.UNAUTHORIZED,
+                errorMessage = koin.appMessages.UNAUTHORIZED
+            )
+        } catch (e: MismatchedInputException) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.BAD_REQUEST,
+                errorMessage = koin.appMessages.MODEL_IS_NOT_VALID
+            )
+        } catch (e: Exception) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.SERVER_ERROR,
+                errorMessage = koin.appMessages.SERVER_ERROR
+            )
         }
     }
 
-    fun getMyFollowerData(call: ApplicationCall) {
-        CoroutineScope(Dispatchers.Unconfined + CoroutineCustomExceptionHandler.handler).launch {
-            try {
-                val result = repository.getMyFollowerData(call.request.headers["Authorization"]!!)
-                result.data?.let {
-                    call.respond(it)
-                    call.response.status(HttpStatusCode.OK)
-                    return@launch
-                }
-
-                sendException(
-                    call = call,
-                    statusCode = result.message?.statusCode ?: 500,
-                    errorMessage = result.message?.message ?: ""
-                )
-            } catch (e: NullPointerException) {
-                sendException(
-                    call = call,
-                    statusCode = StatusCodeUtil.UNAUTHORIZED,
-                    errorMessage = koin.appMessages.UNAUTHORIZED
-                )
-            } catch (e: Exception) {
-                sendException(
-                    call = call,
-                    statusCode = StatusCodeUtil.SERVER_ERROR,
-                    errorMessage = koin.appMessages.SERVER_ERROR
-                )
+    suspend fun getMyFollowerData(call: ApplicationCall) {
+        try {
+            val result = repository.getMyFollowerData(call.request.headers["Authorization"]!!)
+            result.data?.let {
+                call.respond(it)
+                call.response.status(HttpStatusCode.OK)
+                return
             }
+
+            sendException(
+                call = call,
+                statusCode = result.message?.statusCode ?: 500,
+                errorMessage = result.message?.message ?: appMessages.SERVER_ERROR
+            )
+        } catch (e: NullPointerException) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.UNAUTHORIZED,
+                errorMessage = koin.appMessages.UNAUTHORIZED
+            )
+        } catch (e: Exception) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.SERVER_ERROR,
+                errorMessage = koin.appMessages.SERVER_ERROR
+            )
         }
     }
 
-    fun putMyFollowerData(call: ApplicationCall) {
-        CoroutineScope(Dispatchers.Unconfined + CoroutineCustomExceptionHandler.handler).launch {
-            try {
-                val body = call.receive<SetFollowersDataModel>()
-                val result = repository.putMyFollowerData(call.request.headers["Authorization"]!!, body)
+    suspend  fun putMyFollowerData(call: ApplicationCall) {
+        try {
+            val body = call.receive<SetFollowersDataModel>()
+            val result = repository.putMyFollowerData(call.request.headers["Authorization"]!!, body)
 
-                result.data?.let {
-                    call.respond(it)
-                    call.response.status(HttpStatusCode.OK)
-                    return@launch
-                }
-                sendException(
-                    call = call,
-                    statusCode = result.message?.statusCode ?: 500,
-                    errorMessage = result.message?.message ?: ""
-                )
-            } catch (e: NullPointerException) {
-                sendException(
-                    call = call,
-                    statusCode = StatusCodeUtil.UNAUTHORIZED,
-                    errorMessage = koin.appMessages.UNAUTHORIZED
-                )
-            } catch (e: MismatchedInputException) {
-                sendException(
-                    call = call,
-                    statusCode = StatusCodeUtil.BAD_REQUEST,
-                    errorMessage = koin.appMessages.MODEL_IS_NOT_VALID
-                )
-            } catch (e: Exception) {
-                sendException(
-                    call = call,
-                    statusCode = StatusCodeUtil.SERVER_ERROR,
-                    errorMessage = koin.appMessages.SERVER_ERROR
-                )
+            result.data?.let {
+                call.respond(it)
+                call.response.status(HttpStatusCode.OK)
+                return
             }
+            sendException(
+                call = call,
+                statusCode = result.message?.statusCode ?: 500,
+                errorMessage = result.message?.message ?: appMessages.SERVER_ERROR
+            )
+        } catch (e: NullPointerException) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.UNAUTHORIZED,
+                errorMessage = koin.appMessages.UNAUTHORIZED
+            )
+        } catch (e: MismatchedInputException) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.BAD_REQUEST,
+                errorMessage = koin.appMessages.MODEL_IS_NOT_VALID
+            )
+        } catch (e: Exception) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.SERVER_ERROR,
+                errorMessage = koin.appMessages.SERVER_ERROR
+            )
         }
     }
 }
