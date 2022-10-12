@@ -7,7 +7,9 @@ object HttpRoute {
     const val CHANGE_PASSWORD: String = "change-password"
 
     //App
-    const val HOME: String = "home"
+    const val HOME: String = "/home"
+    const val USERS_POSTS: String = "/users-posts"
+
 
     //PROFILE
     const val PROFILE = "/profile"

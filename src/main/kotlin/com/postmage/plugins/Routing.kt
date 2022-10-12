@@ -78,7 +78,16 @@ fun Application.configureRouting() {
             route(IMAGE) {
                 get(DOWNLOAD) {
                     accessManager(call, role = userRouteRole().toTypedArray()) {
-                        koin.usersPostsVM.addPost(call)
+                        koin.imageVM.downloadPhoto(call)
+                    }
+                }
+            }
+
+            //Home
+            route(HOME) {
+                get(USERS_POSTS) {
+                    accessManager(call, role = userRouteRole().toTypedArray()) {
+
                     }
                 }
             }

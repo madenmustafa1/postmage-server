@@ -4,6 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DownloadPhotoRequestModel(
-    val userId: String,
+    val objectId: String,
     val photoName: String
 )

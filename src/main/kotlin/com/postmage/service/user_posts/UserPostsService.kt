@@ -34,21 +34,8 @@ class UserPostsService(
         val query = BasicDBObject("userId", userId)
         val userPostList = arrayListOf<GetUserPostModel>()
 
-
-        collection.find(query).forEach {
-            userPostList.add(it)
-        }
-
+        collection.find(query).forEach { userPostList.add(it) }
 
         return ResponseData.success(userPostList)
     }
 }
-
-/*
-  result = ResponseData.success(
-                GetFollowersDataModel(
-                    following = it.following,
-                    followers = it.followers,
-                )
-            )
- */

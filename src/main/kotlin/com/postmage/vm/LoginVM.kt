@@ -10,15 +10,13 @@ import com.postmage.repo.LoginRepository
 import com.postmage.repo.sendErrorData
 import com.postmage.service.ErrorMessage
 import com.postmage.service.Status
-import com.postmage.util.CoroutineCustomExceptionHandler
 import com.postmage.util.GsonUtil
+import com.postmage.util.sendException
 import io.ktor.http.*
 import io.ktor.server.application.*
+import io.ktor.server.plugins.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 class LoginVM(
     private val repository: LoginRepository
@@ -42,6 +40,12 @@ class LoginVM(
                 GsonUtil.gsonToJson(
                     sendErrorData<ErrorMessage>(koin.appMessages.MODEL_IS_NOT_VALID, StatusCodeUtil.BAD_REQUEST)
                 )
+            )
+        } catch (e: CannotTransformContentToTypeException) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.BAD_REQUEST,
+                errorMessage = koin.appMessages.MODEL_IS_NOT_VALID
             )
         } catch (e: Exception) {
             call.response.status(StatusCodeUtil.errHandle(StatusCodeUtil.SERVER_ERROR))
@@ -69,6 +73,12 @@ class LoginVM(
                 GsonUtil.gsonToJson(
                     sendErrorData<ErrorMessage>(koin.appMessages.MODEL_IS_NOT_VALID, StatusCodeUtil.BAD_REQUEST)
                 )
+            )
+        } catch (e: CannotTransformContentToTypeException) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.BAD_REQUEST,
+                errorMessage = koin.appMessages.MODEL_IS_NOT_VALID
             )
         } catch (e: Exception) {
             call.response.status(StatusCodeUtil.errHandle(StatusCodeUtil.SERVER_ERROR))
