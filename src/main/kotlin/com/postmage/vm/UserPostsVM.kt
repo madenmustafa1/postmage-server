@@ -109,14 +109,3 @@ class UserPostsVM(
         }
     }
 }
-
-
-/*
-        val file = File("C:\\Users\\Mustafa Maden\\Desktop\\users\\0ec6568c-e255-4d08-9b4c-0c29243d1487istockphoto-1200677760-612x612.jpg")
-        call.response.header(
-            HttpHeaders.ContentDisposition,
-            ContentDisposition.Attachment.withParameter(ContentDisposition.Parameters.FileName, "ktor_logo.png")
-                .toString()
-        )
-        call.respondFile(file)
- */
