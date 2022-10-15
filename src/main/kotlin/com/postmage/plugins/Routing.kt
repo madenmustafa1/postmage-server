@@ -42,21 +42,17 @@ fun Application.configureRouting() {
                     }
                 }
 
-                get(MY_FOLLOWER) {
+                get(FOLLOWER) {
                     accessManager(call, role = userRouteRole().toTypedArray()) {
                         koin.profileVM.getMyFollowerData(call)
                     }
                 }
 
-                put(MY_FOLLOWER) {
+                put(FOLLOWER) {
                     accessManager(call, role = userRouteRole().toTypedArray()) {
-                        CoroutineScope(Dispatchers.Unconfined).launch {
-                            koin.profileVM.putMyFollowerData(call)
-                        }
+                        koin.profileVM.putMyFollowerData(call)
                     }
                 }
-
-
             }
 
             //Posts
@@ -72,6 +68,12 @@ fun Application.configureRouting() {
                         koin.usersPostsVM.getMyPost(call)
                     }
                 }
+
+                get(USERS_POSTS) {
+                    accessManager(call, role = userRouteRole().toTypedArray()) {
+                        koin.usersPostsVM.postOfFollowedUsers(call)
+                    }
+                }
             }
 
             //Image
@@ -85,11 +87,7 @@ fun Application.configureRouting() {
 
             //Home
             route(HOME) {
-                get(USERS_POSTS) {
-                    accessManager(call, role = userRouteRole().toTypedArray()) {
 
-                    }
-                }
             }
         }
     }
