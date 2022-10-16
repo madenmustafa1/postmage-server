@@ -34,7 +34,7 @@ class ProfileService(
         var result: ResponseData<Boolean>? = null
 
         collection.find(query).limit(1).forEach {
-            body.group?.let { group -> it.group = group }
+            body.groups?.let { group -> it.groups = group }
             body.gender?.let { gender -> it.gender = gender }
             body.phoneNumber?.let { phoneNumber -> it.phoneNumber = phoneNumber }
             body.nameSurname?.let { nameSurname -> it.nameSurname = nameSurname }

@@ -9,9 +9,6 @@ import com.postmage.util.HttpRoute
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 val koin = KoinApplication()
 
@@ -30,7 +27,7 @@ fun Application.configureRouting() {
             }
 
             //Profile
-            route (PROFILE) {
+            route(PROFILE) {
                 get(MY_PROFILE) {
                     accessManager(call, role = userRouteRole().toTypedArray()) {
                         koin.profileVM.getMyProfileInfo(call)
@@ -72,6 +69,15 @@ fun Application.configureRouting() {
                 get(USERS_POSTS) {
                     accessManager(call, role = userRouteRole().toTypedArray()) {
                         koin.usersPostsVM.postOfFollowedUsers(call)
+                    }
+                }
+            }
+
+            //Group
+            route(GROUP) {
+                post(CREATE_GROUP) {
+                    accessManager(call, role = userRouteRole().toTypedArray()) {
+                        koin.groupVM.createGroup(call)
                     }
                 }
             }

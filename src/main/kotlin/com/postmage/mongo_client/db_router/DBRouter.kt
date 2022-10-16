@@ -8,4 +8,5 @@ object DBRouter {
     const val PROFILE = "profile"
 
     const val USERS_POSTS = "users-posts"
+    const val GROUPS = "groups"
 }

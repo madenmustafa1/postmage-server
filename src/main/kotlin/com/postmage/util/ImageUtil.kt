@@ -1,7 +1,9 @@
 package com.postmage.util
 
-//import com.postmage.extensions.toBase64
-//import org.eclipse.jetty.util.Loader
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import java.io.File
+
 
 class ImageUtil {
     private val photos: String = "photos"
@@ -10,5 +12,20 @@ class ImageUtil {
         //val pathBytes = Loader.getResource("drawable/$photos/$pathName/$imgName.png")?.readBytes()
         //return pathBytes?.toBase64() ?: ""
         return ""
+    }
+
+    suspend fun writePhotoToDisk(photoName: String, photoBytes: ByteArray): Boolean {
+        return try {
+            val photoDir = File(Directory.userDesktopDir?.path, photoName)
+
+            if (withContext(Dispatchers.IO) {
+                    photoDir.createNewFile()
+                }) {
+                File(Directory.userDesktopDir?.path, photoName).writeBytes(photoBytes)
+            }
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 }

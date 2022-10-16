@@ -39,7 +39,10 @@ class UserPostsService(
         return ResponseData.success(userPostList)
     }
 
-    override suspend fun postOfFollowedUsers(userId: String, body: PostOfFollowedUsers): ResponseData<List<GetUserPostModel>> {
+    override suspend fun postOfFollowedUsers(
+        userId: String,
+        body: PostOfFollowedUsers
+    ): ResponseData<List<GetUserPostModel>> {
         //Find user following data
         val userIdQuery = BasicDBObject("userId", userId)
         val followingData: ArrayList<SingleFollowerDataModel> = arrayListOf()
@@ -51,7 +54,7 @@ class UserPostsService(
         followingData.forEach { userIdList.add(it.userId) }
 
         //Get posts
-        val sortDescQuery = BasicDBObject("creationTime", MongoSort.DESC )
+        val sortDescQuery = BasicDBObject("creationTime", MongoSort.DESC)
         val userPostList = arrayListOf<GetUserPostModel>()
         mongoDB.getUsersPostsCollection
             .find(all("userId", userIdList))

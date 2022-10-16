@@ -7,15 +7,18 @@ class AppMessages {
     val ACCESS_DENIED by lazy { "Access denied" }
     val UNAUTHORIZED by lazy { "Unauthorized." }
 
+    //User
     val NOT_VALID_EMAIL by lazy { "E-mail not valid." }
     val PASSWORD_NOT_BE_SHORT by lazy { "Password cannot be shorter than 5 characters" }
     val NAME_SURNAME_NOT_BE_EMPTY by lazy { "Name Surname cannot be empty" }
     val GENDER_INVALIDATE by lazy { "Gender invalidate. INT: 0 MALE, 1 FEMALE" }
     val EMAIL_NOT_UNIQUE by lazy { "E-mail already exits" }
     val EMAIL_OR_PASSWORD_INCORRECT by lazy { "E-mail or password incorrect." }
+    val USER_NOT_FOUND by lazy { "User not found." }
 
 
     val USER_ID_NOT_BE_NULL by lazy { "userId cannot be null." }
+    val GROUP_NAME_NOT_BE_NULL by lazy { "groupName cannot be null." }
 
     //Photo
     val PHOTO_CANNOT_BE_EMPTY by lazy { "Photo cannot be empty" }

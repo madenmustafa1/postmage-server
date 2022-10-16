@@ -9,8 +9,6 @@ object HttpRoute {
     //App
     const val HOME: String = "/home"
 
-
-
     //PROFILE
     const val PROFILE = "/profile"
     const val MY_PROFILE: String = "/my-profile"
@@ -22,6 +20,10 @@ object HttpRoute {
     const val MY_POSTS = "/my-posts"
     const val ADD_POSTS = "/add-posts"
     const val USERS_POSTS: String = "/followed-users-posts"
+
+    //Group
+    const val GROUP = "/group"
+    const val CREATE_GROUP = "/create-group"
 
     //Image
     const val IMAGE = "/image"

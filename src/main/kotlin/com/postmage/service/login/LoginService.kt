@@ -55,7 +55,6 @@ class LoginService(
 
             return ResponseData.error(ErrorMessage(appMessages.EMAIL_OR_PASSWORD_INCORRECT, statusCode = 404), null)
         } catch (e: Exception) {
-            println(e.message)
             return ResponseData.error(ErrorMessage(appMessages.SERVER_ERROR, statusCode = 500), null)
         }
     }
@@ -86,6 +85,7 @@ class LoginService(
                 )
             )
         } catch (e: Exception) {
+            println("@€@€@€@€:: "+e.message)
             ResponseData.error(ErrorMessage(appMessages.SERVER_ERROR), null)
         }
     }
