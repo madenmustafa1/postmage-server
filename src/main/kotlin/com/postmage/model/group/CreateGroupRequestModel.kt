@@ -1,6 +1,5 @@
 package com.postmage.model.group
 
-import com.postmage.model.profile.user.UserProfileInfoModel
 import com.postmage.util.DateUtil
 import kotlinx.serialization.Serializable
 
@@ -10,7 +9,7 @@ data class CreateGroupRequestModel(
     var description: String = "",
     var adminIds: ArrayList<String> = arrayListOf(),
     var creationTime: Long? = DateUtil.getTimeNow(),
-    var groupMembers: ArrayList<UserProfileInfoModel> = arrayListOf(),
+    var groupUsers: ArrayList<GroupUsersModel> = arrayListOf(),
     var photoName: String? = null,
     var photoBytes: ByteArray? = null,
 ) {
@@ -24,7 +23,7 @@ data class CreateGroupRequestModel(
         if (description != other.description) return false
         if (adminIds != other.adminIds) return false
         if (creationTime != other.creationTime) return false
-        if (groupMembers != other.groupMembers) return false
+        if (groupUsers != other.groupUsers) return false
         if (photoName != other.photoName) return false
         if (photoBytes != null) {
             if (other.photoBytes == null) return false
@@ -39,7 +38,7 @@ data class CreateGroupRequestModel(
         result = 31 * result + description.hashCode()
         result = 31 * result + adminIds.hashCode()
         result = 31 * result + (creationTime?.hashCode() ?: 0)
-        result = 31 * result + groupMembers.hashCode()
+        result = 31 * result + groupUsers.hashCode()
         result = 31 * result + (photoName?.hashCode() ?: 0)
         result = 31 * result + (photoBytes?.contentHashCode() ?: 0)
         return result

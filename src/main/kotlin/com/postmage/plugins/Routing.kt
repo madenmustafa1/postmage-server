@@ -80,6 +80,12 @@ fun Application.configureRouting() {
                         koin.groupVM.createGroup(call)
                     }
                 }
+
+                put(ADD_USERS_GROUP) {
+                    accessManager(call, role = userRouteRole().toTypedArray()) {
+                        koin.groupVM.addUsersToGroup(call)
+                    }
+                }
             }
 
             //Image

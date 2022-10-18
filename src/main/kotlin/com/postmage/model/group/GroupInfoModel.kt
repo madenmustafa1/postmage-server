@@ -1,6 +1,5 @@
 package com.postmage.model.group
 
-import com.postmage.model.profile.user.UserProfileInfoModel
 import com.postmage.util.DateUtil
 import kotlinx.serialization.Serializable
 
@@ -12,5 +11,12 @@ data class GroupInfoModel(
     val photoName: String,
     val adminIds: ArrayList<String> = arrayListOf(),
     val creationTime: Long? = DateUtil.getTimeNow(),
-    val groupMembers: ArrayList<UserProfileInfoModel> = arrayListOf(),
+    val groupUsers: ArrayList<GroupUsersModel> = arrayListOf(),
+)
+
+@Serializable
+data class GroupUsersModel(
+    val name: String,
+    val profileUrl: String?,
+    val id: String
 )

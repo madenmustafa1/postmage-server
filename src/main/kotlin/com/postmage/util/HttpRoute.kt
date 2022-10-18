@@ -24,6 +24,7 @@ object HttpRoute {
     //Group
     const val GROUP = "/group"
     const val CREATE_GROUP = "/create-group"
+    const val ADD_USERS_GROUP = "/add-users-to-group"
 
     //Image
     const val IMAGE = "/image"
