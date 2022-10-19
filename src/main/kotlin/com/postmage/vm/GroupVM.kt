@@ -58,7 +58,6 @@ class GroupVM(
                 errorMessage = result.message?.message ?: ""
             )
 
-
         } catch (e: NullPointerException) {
             sendException(
                 call = call,
@@ -96,7 +95,6 @@ class GroupVM(
                     repository.addAdminToGroup(call.request.headers["Authorization"]!!, body)
             }
 
-
             result.data?.let {
                 call.respond(it)
                 call.response.status(HttpStatusCode.OK)
@@ -126,7 +124,6 @@ class GroupVM(
                 errorMessage = koin.appMessages.MODEL_IS_NOT_VALID
             )
         } catch (e: Exception) {
-            println(e.message)
             sendException(
                 call = call,
                 statusCode = StatusCodeUtil.SERVER_ERROR,

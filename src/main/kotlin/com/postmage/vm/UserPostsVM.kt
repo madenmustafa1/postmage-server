@@ -2,6 +2,7 @@ package com.postmage.vm
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.postmage.enums.StatusCodeUtil
+import com.postmage.model.group.GroupIdModel
 import com.postmage.model.image.DownloadPhotoRequestModel
 import com.postmage.model.posts.add_posts.AddPostModel
 import com.postmage.model.posts.followed_users.PostOfFollowedUsers
@@ -22,7 +23,7 @@ class UserPostsVM(
     private val appMessages: AppMessages
 ) {
 
-    suspend fun addPost(call: ApplicationCall) {
+    suspend fun addPost(call: ApplicationCall, addPostType: AddPostType = AddPostType.ADD_PERSONAL) {
         try {
             val model = AddPostModel()
 
@@ -111,6 +112,38 @@ class UserPostsVM(
         }
     }
 
+    suspend fun getGroupPost(call: ApplicationCall) {
+        try {
+            val body = call.receive<GroupIdModel>()
+            val result = repository.getGroupPost(call.request.headers["Authorization"]!!, body)
+
+            result.data?.let {
+                call.respond(it)
+                call.response.status(HttpStatusCode.OK)
+                return
+            }
+
+            sendException(
+                call = call,
+                statusCode = result.message?.statusCode ?: 500,
+                errorMessage = result.message?.message ?: ""
+            )
+
+        } catch (e: NullPointerException) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.UNAUTHORIZED,
+                errorMessage = koin.appMessages.UNAUTHORIZED
+            )
+        } catch (e: Exception) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.SERVER_ERROR,
+                errorMessage = appMessages.SERVER_ERROR
+            )
+        }
+    }
+
     suspend fun postOfFollowedUsers(call: ApplicationCall) {
         try {
             val body = call.receive<PostOfFollowedUsers>()
@@ -141,5 +174,10 @@ class UserPostsVM(
                 errorMessage = appMessages.SERVER_ERROR
             )
         }
+    }
+
+    enum class AddPostType {
+        ADD_PERSONAL,
+        ADD_GROUP
     }
 }

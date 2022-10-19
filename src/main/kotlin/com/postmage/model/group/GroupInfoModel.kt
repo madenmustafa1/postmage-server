@@ -20,3 +20,8 @@ data class GroupUsersModel(
     val profileUrl: String?,
     val id: String
 )
+
+@Serializable
+data class GroupIdModel(
+    val groupId: String? = ""
+)

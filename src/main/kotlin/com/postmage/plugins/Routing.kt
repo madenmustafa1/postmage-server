@@ -7,6 +7,7 @@ import com.postmage.extensions.makeFolder
 import com.postmage.util.Directory
 import com.postmage.util.HttpRoute
 import com.postmage.vm.GroupVM
+import com.postmage.vm.UserPostsVM
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -62,9 +63,21 @@ fun Application.configureRouting() {
                     }
                 }
 
+                post(ADD_POSTS_TO_GROUP) {
+                    accessManager(call, role = userRouteRole().toTypedArray()) {
+                        koin.usersPostsVM.addPost(call, UserPostsVM.AddPostType.ADD_GROUP)
+                    }
+                }
+
                 get(MY_POSTS) {
                     accessManager(call, role = userRouteRole().toTypedArray()) {
                         koin.usersPostsVM.getMyPost(call)
+                    }
+                }
+
+                get(GROUP_POSTS) {
+                    accessManager(call, role = userRouteRole().toTypedArray()) {
+                        koin.usersPostsVM.getGroupPost(call)
                     }
                 }
 
