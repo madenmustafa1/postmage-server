@@ -2,7 +2,7 @@ package com.postmage.service.group
 
 import com.mongodb.BasicDBObject
 import com.postmage.enums.StatusCodeUtil
-import com.postmage.model.group.AddUsersToGroupModel
+import com.postmage.model.group.UsersToGroupModel
 import com.postmage.model.group.CreateGroupRequestModel
 import com.postmage.model.group.GroupInfoModel
 import com.postmage.model.group.GroupUsersModel
@@ -15,7 +15,7 @@ import org.bson.types.ObjectId
 class GroupService(
     private val mongoDB: MongoInitialize,
     private val appMessages: AppMessages
-): GroupInterface  {
+) : GroupInterface {
     override suspend fun createGroup(userId: String, body: CreateGroupRequestModel): ResponseData<GroupInfoModel> {
         var model: GroupInfoModel? = null
         var isSuccess = false
@@ -53,7 +53,7 @@ class GroupService(
         return sendErrorData(appMessages.USER_NOT_FOUND, StatusCodeUtil.BAD_REQUEST)
     }
 
-    override suspend fun addUsersToGroup(userId: String, body: AddUsersToGroupModel): ResponseData<Boolean> {
+    override suspend fun addUsersToGroup(userId: String, body: UsersToGroupModel): ResponseData<Boolean> {
         var isSuccess = false
         //Get <Group> collection
         val groupQuery = BasicDBObject("groupId", body.groupId)
@@ -64,17 +64,99 @@ class GroupService(
                     //Find users <User> collection
                     val userQuery = BasicDBObject("userId", body.id)
                     mongoDB.getUserCollection.find(userQuery).limit(1).forEach { userModel ->
-                        groupModel.groupUsers.add(
-                            //Add users
-                            GroupUsersModel(
-                                name = userModel.nameSurname ?: "",
-                                id = userModel.userId!!,
-                                profileUrl = userModel.profilePhotoUrl ?: ""
-                            )
+                        //Add users
+                        val model = GroupUsersModel(
+                            name = userModel.nameSurname ?: "",
+                            id = userModel.userId!!,
+                            profileUrl = userModel.profilePhotoUrl ?: ""
                         )
+
+                        //Duplicate <Group> group control
+                        groupModel.groupUsers
+                            .removeIf { it.id == body.id }
+                            .also {
+                                groupModel.groupUsers.add(model)
+                            }
+
                         //Set <Group> collection
                         mongoDB.getGroupsCollection.replaceOne(groupQuery, groupModel)
+
+                        //Duplicate <User> group control
+                        userModel.groups?.let { _ ->
+                            userModel.groups!!
+                                .removeIf { it.groupId == body.groupId }
+                                .also {
+                                    userModel.groups!!.add(groupModel)
+                                }
+                        }
+
+                        mongoDB.getUserCollection.replaceOne(userQuery, userModel)
                     }
+                    isSuccess = true
+                    break
+                }
+            }
+        }
+
+        if (isSuccess) return ResponseData.success(true)
+
+        return sendErrorData(
+            appMessages.ACCESS_DENIED,
+            statusCode = StatusCodeUtil.FORBIDDEN
+        )
+    }
+
+    override suspend fun removeUsersToGroup(userId: String, body: UsersToGroupModel): ResponseData<Boolean> {
+        var isSuccess = false
+        //Get <Group> collection
+        val groupQuery = BasicDBObject("groupId", body.groupId)
+        mongoDB.getGroupsCollection.find(groupQuery).limit(1).forEach { groupModel ->
+            //Admin Control
+            for (i in groupModel.adminIds) {
+                if (i == userId) {
+                    //Set <Group> collection
+                    groupModel.groupUsers.removeIf { it.id == body.id }
+                    groupModel.adminIds.removeIf { it == body.id }
+                    mongoDB.getGroupsCollection.replaceOne(groupQuery, groupModel)
+
+                    //Find users <User> collection
+                    val userQuery = BasicDBObject("userId", body.id)
+                    mongoDB.getUserCollection.find(userQuery).limit(1).forEach { userModel ->
+                        //Set <User> group control
+                        userModel.groups?.let { _ ->
+                            userModel.groups!!.removeIf { it.groupId == body.groupId }
+                        }
+                        mongoDB.getUserCollection.replaceOne(userQuery, userModel)
+                    }
+                    isSuccess = true
+                    break
+                }
+            }
+        }
+
+        if (isSuccess) return ResponseData.success(true)
+
+        return sendErrorData(
+            appMessages.ACCESS_DENIED,
+            statusCode = StatusCodeUtil.FORBIDDEN
+        )
+    }
+
+    override suspend fun addAdminToGroup(userId: String, body: UsersToGroupModel): ResponseData<Boolean> {
+        var isSuccess = false
+        //Get <Group> collection
+        val groupQuery = BasicDBObject("groupId", body.groupId)
+        mongoDB.getGroupsCollection.find(groupQuery).limit(1).forEach { groupModel ->
+            //Admin Control
+            for (i in groupModel.adminIds) {
+                if (i == userId) {
+                    //Set <Group> collection
+                    groupModel
+                        .adminIds.removeIf { it == body.id }
+                        .also { groupModel.adminIds.add(body.id) }
+
+                    mongoDB.getGroupsCollection.replaceOne(groupQuery, groupModel)
+
                     isSuccess = true
                     break
                 }

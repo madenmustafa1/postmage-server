@@ -16,6 +16,7 @@ data class UserProfileInfoModel(
     var followersSize: Int? = null,
     var followingSize: Int? = null,
     var userRole: Int? = AppUserRole.USER.ordinal,
+    var password: String? = null,
     val following: ArrayList<SingleFollowerDataModel> = arrayListOf(),
     val followers: ArrayList<SingleFollowerDataModel> = arrayListOf(),
 )

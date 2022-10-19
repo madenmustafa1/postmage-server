@@ -2,10 +2,8 @@ package com.postmage.vm
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.postmage.enums.StatusCodeUtil
-import com.postmage.model.group.AddUsersToGroupModel
+import com.postmage.model.group.UsersToGroupModel
 import com.postmage.model.group.CreateGroupRequestModel
-import com.postmage.model.posts.add_posts.AddPostModel
-import com.postmage.model.profile.user.UserProfileInfoModel
 import com.postmage.plugins.koin
 import com.postmage.repo.GroupRepository
 import com.postmage.util.AppMessages
@@ -83,10 +81,21 @@ class GroupVM(
     }
 
 
-    suspend fun addUsersToGroup(call: ApplicationCall) {
+    suspend fun usersToGroup(call: ApplicationCall, requestType: UsersToGroupRequestType) {
         try {
-            val body = call.receive<AddUsersToGroupModel>()
-            val result = repository.addUsersToGroup(call.request.headers["Authorization"]!!, body)
+            val body = call.receive<UsersToGroupModel>()
+
+            val result = when(requestType) {
+                UsersToGroupRequestType.ADD_USER ->
+                    repository.addUsersToGroup(call.request.headers["Authorization"]!!, body)
+
+                UsersToGroupRequestType.REMOVE ->
+                    repository.removeUsersToGroup(call.request.headers["Authorization"]!!, body)
+
+                UsersToGroupRequestType.ADD_ADMIN ->
+                    repository.addAdminToGroup(call.request.headers["Authorization"]!!, body)
+            }
+
 
             result.data?.let {
                 call.respond(it)
@@ -117,11 +126,18 @@ class GroupVM(
                 errorMessage = koin.appMessages.MODEL_IS_NOT_VALID
             )
         } catch (e: Exception) {
+            println(e.message)
             sendException(
                 call = call,
                 statusCode = StatusCodeUtil.SERVER_ERROR,
                 errorMessage = koin.appMessages.SERVER_ERROR
             )
         }
+    }
+
+    enum class UsersToGroupRequestType {
+        ADD_USER,
+        REMOVE,
+        ADD_ADMIN
     }
 }

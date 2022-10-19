@@ -3,7 +3,7 @@ package com.postmage.repo
 import com.postmage.enums.StatusCodeUtil
 import com.postmage.extensions.authToDataClass
 import com.postmage.extensions.writePhotoToDisk
-import com.postmage.model.group.AddUsersToGroupModel
+import com.postmage.model.group.UsersToGroupModel
 import com.postmage.model.group.CreateGroupRequestModel
 import com.postmage.model.group.GroupInfoModel
 import com.postmage.service.ResponseData
@@ -40,11 +40,27 @@ class GroupRepository(
         return groupService.createGroup(userId.authToDataClass()!!.userId, body)
     }
 
-    override suspend fun addUsersToGroup(userId: String, body: AddUsersToGroupModel): ResponseData<Boolean> {
+    override suspend fun addUsersToGroup(userId: String, body: UsersToGroupModel): ResponseData<Boolean> {
         if (userId == body.id) return sendErrorData(
             appMessages.WRONG_USER_ID,
             statusCode = StatusCodeUtil.BAD_REQUEST,
         )
         return groupService.addUsersToGroup(userId.authToDataClass()!!.userId, body)
+    }
+
+    override suspend fun removeUsersToGroup(userId: String, body: UsersToGroupModel): ResponseData<Boolean> {
+        if (userId == body.id) return sendErrorData(
+            appMessages.WRONG_USER_ID,
+            statusCode = StatusCodeUtil.BAD_REQUEST,
+        )
+        return groupService.removeUsersToGroup(userId.authToDataClass()!!.userId, body)
+    }
+
+    override suspend fun addAdminToGroup(userId: String, body: UsersToGroupModel): ResponseData<Boolean> {
+        if (userId == body.id) return sendErrorData(
+            appMessages.WRONG_USER_ID,
+            statusCode = StatusCodeUtil.BAD_REQUEST,
+        )
+        return groupService.addAdminToGroup(userId.authToDataClass()!!.userId, body)
     }
 }

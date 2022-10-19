@@ -6,6 +6,7 @@ import com.postmage.enums.userRouteRole
 import com.postmage.extensions.makeFolder
 import com.postmage.util.Directory
 import com.postmage.util.HttpRoute
+import com.postmage.vm.GroupVM
 import io.ktor.server.application.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -14,6 +15,7 @@ val koin = KoinApplication()
 
 fun Application.configureRouting() {
     Directory.usersFile.makeFolder("users")
+
 
     with(HttpRoute) {
         routing {
@@ -83,7 +85,19 @@ fun Application.configureRouting() {
 
                 put(ADD_USERS_GROUP) {
                     accessManager(call, role = userRouteRole().toTypedArray()) {
-                        koin.groupVM.addUsersToGroup(call)
+                        koin.groupVM.usersToGroup(call, GroupVM.UsersToGroupRequestType.ADD_USER)
+                    }
+                }
+
+                put(ADD_ADMIN_GROUP) {
+                    accessManager(call, role = userRouteRole().toTypedArray()) {
+                        koin.groupVM.usersToGroup(call, GroupVM.UsersToGroupRequestType.ADD_ADMIN)
+                    }
+                }
+
+                put(REMOVE_USERS_GROUP) {
+                    accessManager(call, role = userRouteRole().toTypedArray()) {
+                        koin.groupVM.usersToGroup(call, GroupVM.UsersToGroupRequestType.REMOVE)
                     }
                 }
             }
