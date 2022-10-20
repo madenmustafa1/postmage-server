@@ -10,7 +10,7 @@ data class GroupInfoModel(
     var description: String = "",
     val photoName: String,
     val adminIds: ArrayList<String> = arrayListOf(),
-    val creationTime: Long? = DateUtil.getTimeNow(),
+    val creationTime: Long = DateUtil.getTimeNow(),
     val groupUsers: ArrayList<GroupUsersModel> = arrayListOf(),
 )
 

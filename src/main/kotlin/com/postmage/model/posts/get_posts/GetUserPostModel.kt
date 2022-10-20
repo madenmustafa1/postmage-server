@@ -11,7 +11,7 @@ data class GetUserPostModel(
     var description: String = "",
     var groupId: String = "",
     var creationTime: Long? = null,
-    var likeUserId: String? = null,
+    var likeUserId: ArrayList<String>? = null,
     var comment: ArrayList<UserCommentModel>? = null,
     var objectId: String? = null,
     var userId: String? = null

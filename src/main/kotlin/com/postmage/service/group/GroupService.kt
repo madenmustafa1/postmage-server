@@ -27,7 +27,7 @@ class GroupService(
                 groupId = ObjectId.get().toString(),
                 photoName = body.photoName!!,
                 description = body.description,
-                creationTime = body.creationTime,
+                //creationTime = body.creationTime,
                 groupUsers = arrayListOf(
                     //Add admin
                     GroupUsersModel(

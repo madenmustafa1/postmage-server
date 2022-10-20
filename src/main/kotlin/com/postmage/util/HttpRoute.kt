@@ -20,6 +20,7 @@ object HttpRoute {
     const val MY_POSTS = "/my-posts"
     const val GROUP_POSTS = "/group-posts"
     const val ADD_POSTS = "/add-posts"
+    const val UPDATE_POSTS = "/update-posts"
     const val ADD_POSTS_TO_GROUP = "/add-posts-group"
 
     const val USERS_POSTS: String = "/followed-users-posts"

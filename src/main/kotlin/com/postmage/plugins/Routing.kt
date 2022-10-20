@@ -2,6 +2,7 @@ package com.postmage.plugins
 
 import com.postmage.controller.accessManager
 import com.postmage.dependecy_injection.KoinApplication
+import com.postmage.enums.PostType
 import com.postmage.enums.userRouteRole
 import com.postmage.extensions.makeFolder
 import com.postmage.util.Directory
@@ -65,13 +66,19 @@ fun Application.configureRouting() {
 
                 post(ADD_POSTS_TO_GROUP) {
                     accessManager(call, role = userRouteRole().toTypedArray()) {
-                        koin.usersPostsVM.addPost(call, UserPostsVM.AddPostType.ADD_GROUP)
+                        koin.usersPostsVM.addPost(call, PostType.ADD_GROUP)
                     }
                 }
 
                 get(MY_POSTS) {
                     accessManager(call, role = userRouteRole().toTypedArray()) {
                         koin.usersPostsVM.getMyPost(call)
+                    }
+                }
+
+                put(UPDATE_POSTS) {
+                    accessManager(call, role = userRouteRole().toTypedArray()) {
+                        koin.usersPostsVM.updatePost(call)
                     }
                 }
 

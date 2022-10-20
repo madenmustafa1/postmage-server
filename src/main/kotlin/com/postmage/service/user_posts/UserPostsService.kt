@@ -2,11 +2,13 @@ package com.postmage.service.user_posts
 
 import com.mongodb.BasicDBObject
 import com.mongodb.client.model.Filters.all
+import com.postmage.enums.PostType
 import com.postmage.enums.StatusCodeUtil
 import com.postmage.model.group.GroupIdModel
 import com.postmage.model.posts.add_posts.AddPostModel
 import com.postmage.model.posts.followed_users.PostOfFollowedUsers
 import com.postmage.model.posts.get_posts.GetUserPostModel
+import com.postmage.model.posts.update_posts.UpdateUserPostModel
 import com.postmage.model.profile.user.SingleFollowerDataModel
 import com.postmage.mongo_client.MongoInitialize
 import com.postmage.mongo_client.mongo_constants.MongoSort
@@ -23,7 +25,7 @@ class UserPostsService(
     override suspend fun addPost(
         userId: String,
         body: AddPostModel,
-        addPostType: UserPostsVM.AddPostType
+        addPostType: PostType
     ): ResponseData<Boolean> {
         val model = GetUserPostModel(
             groupId = body.groupId,
@@ -82,7 +84,7 @@ class UserPostsService(
             StatusCodeUtil.FORBIDDEN
         )
 
-        //Get <User> collection
+        //Get <UsersPosts> collection
         val sortDescQuery = BasicDBObject("creationTime", MongoSort.DESC)
         val postList = arrayListOf<GetUserPostModel>()
         mongoDB
@@ -92,6 +94,44 @@ class UserPostsService(
             .forEach { postList.add(it) }
 
         return ResponseData.success(postList)
+    }
+
+    override suspend fun updatePost(userId: String, body: UpdateUserPostModel): ResponseData<GetUserPostModel> {
+        var model: GetUserPostModel? = null
+
+        //Get <UsersPosts> collection
+        val query = BasicDBObject("objectId", body.objectId!!)
+        mongoDB
+            .getUsersPostsCollection
+            .find(query)
+            .limit(1).forEach {
+                if (body.description != null) it.description = body.description!!
+                if (body.comment != null) {
+                    if (it.comment == null) it.comment = arrayListOf(body.comment!!)
+                    else it.comment!!.add(body.comment!!)
+                }
+                if (body.likeUserId != null) {
+                    if (it.likeUserId == null) it.likeUserId = arrayListOf(body.likeUserId!!)
+                    else {
+                        val result = it.likeUserId!!.removeIf { id ->
+                            id == body.likeUserId
+                        }
+                        if (!result) it.likeUserId!!.add(body.likeUserId!!)
+                    }
+                }
+
+                mongoDB.getUsersPostsCollection.replaceOne(query, it)
+                model = it
+            }
+
+        model?.let {
+            return ResponseData.success(model)
+        } ?: run {
+            return sendErrorData(
+                appMessages.POST_NOT_FOUND,
+                statusCode = StatusCodeUtil.BAD_REQUEST,
+            )
+        }
     }
 
     override suspend fun postOfFollowedUsers(

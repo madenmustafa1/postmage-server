@@ -11,7 +11,7 @@ data class AddPostModel(
     var photoBytes: ByteArray? = null,
     var description: String = "",
     var groupId: String = "",
-    val creationTime: Long? = DateUtil.getTimeNow()
+    val creationTime: Long = DateUtil.getTimeNow()
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

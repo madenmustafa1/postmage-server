@@ -17,10 +17,13 @@ class AppMessages {
     val USER_NOT_FOUND by lazy { "User not found." }
 
 
+
+    //Post
     val USER_ID_NOT_BE_NULL by lazy { "userId cannot be null." }
     val GROUP_ID_NOT_BE_NULL by lazy { "groupId cannot be null." }
     val WRONG_USER_ID by lazy { "Wrong userId." }
     val GROUP_NAME_NOT_BE_NULL by lazy { "groupName cannot be null." }
+    val POST_NOT_FOUND by lazy { "Post not found." }
 
     //Photo
     val PHOTO_CANNOT_BE_EMPTY by lazy { "Photo cannot be empty" }

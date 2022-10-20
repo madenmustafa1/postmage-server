@@ -85,7 +85,6 @@ class LoginService(
                 )
             )
         } catch (e: Exception) {
-            println("@€@€@€@€:: "+e.message)
             ResponseData.error(ErrorMessage(appMessages.SERVER_ERROR), null)
         }
     }

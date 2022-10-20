@@ -1,5 +1,6 @@
 package com.postmage.repo
 
+import com.postmage.enums.PostType
 import com.postmage.enums.StatusCodeUtil
 import com.postmage.extensions.authToDataClass
 import com.postmage.extensions.writePhotoToDisk
@@ -7,6 +8,7 @@ import com.postmage.model.group.GroupIdModel
 import com.postmage.model.posts.add_posts.AddPostModel
 import com.postmage.model.posts.followed_users.PostOfFollowedUsers
 import com.postmage.model.posts.get_posts.GetUserPostModel
+import com.postmage.model.posts.update_posts.UpdateUserPostModel
 import com.postmage.service.ResponseData
 import com.postmage.service.user_posts.UserPostsInterface
 import com.postmage.service.user_posts.UserPostsService
@@ -20,10 +22,10 @@ class UserPostRepository(
     override suspend fun addPost(
         userId: String,
         body: AddPostModel,
-        addPostType: UserPostsVM.AddPostType
+        addPostType: PostType
     ): ResponseData<Boolean> {
         try {
-            if (addPostType == UserPostsVM.AddPostType.ADD_GROUP) {
+            if (addPostType == PostType.ADD_GROUP) {
                 if (body.groupId.trim().isEmpty()) return sendErrorData(
                     appMessages.GROUP_ID_NOT_BE_NULL,
                     statusCode = StatusCodeUtil.BAD_REQUEST,
@@ -76,6 +78,15 @@ class UserPostRepository(
         )
 
         return userPostsService.getGroupPost(userId.authToDataClass()!!.userId, body)
+    }
+
+    override suspend fun updatePost(userId: String, body: UpdateUserPostModel): ResponseData<GetUserPostModel> {
+        if (body.objectId.isNullOrEmpty()) return sendErrorData(
+            appMessages.WRONG_USER_ID,
+            statusCode = StatusCodeUtil.BAD_REQUEST
+        )
+
+        return userPostsService.updatePost(userId.authToDataClass()!!.userId, body)
     }
 
     override suspend fun postOfFollowedUsers(
