@@ -25,7 +25,7 @@ fun Application.configureRouting() {
 
             //Login
             route("") {
-                get(SIGN_IN) { koin.loginVM.signIn(call) }
+                post(SIGN_IN) { koin.loginVM.signIn(call) }
                 post(SIGN_UP) { koin.loginVM.signUp(call) }
                 put(CHANGE_PASSWORD) { koin.loginVM.changePassword(call) }
             }

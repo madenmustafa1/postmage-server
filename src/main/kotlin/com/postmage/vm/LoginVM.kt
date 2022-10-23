@@ -61,12 +61,15 @@ class LoginVM(
         try {
             val body = call.receive<SignUpRequestModel>()
             val result = repository.singUp(body)
-            (result.message ?: result.data)?.let { call.respond(it) }
-            if (result.status == Status.SUCCESS) {
-                call.response.status(HttpStatusCode.OK)
+            if (result.status != Status.SUCCESS) {
+                call.response.status(StatusCodeUtil.errHandle(result.message?.statusCode ?: 500))
+                call.respond(result.message ?: koin.appMessages.SERVER_ERROR)
                 return
             }
-            call.response.status(StatusCodeUtil.errHandle(result.message?.statusCode ?: 500))
+
+            (result.message ?: result.data)?.let { call.respond(it) }
+            call.response.status(HttpStatusCode.OK)
+
         } catch (e: MismatchedInputException) {
             call.response.status(StatusCodeUtil.errHandle(StatusCodeUtil.BAD_REQUEST))
             call.respond(

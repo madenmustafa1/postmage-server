@@ -13,6 +13,7 @@ import com.postmage.model.sign_up.SignUpRequestModel
 import com.postmage.model.sign_up.SignUpResponseModel
 import com.postmage.mongo_client.MongoInitialize
 import com.postmage.mongo_client.db_router.DBRouter
+import com.postmage.repo.sendErrorData
 import org.bson.Document
 import org.bson.types.ObjectId
 import com.postmage.service.ErrorMessage
@@ -66,7 +67,7 @@ class LoginService(
 
             val query = BasicDBObject("mail", signUpRequestModel.mail)
             repeat(collection.find(query).limit(1).count()) {
-                return ResponseData.error(ErrorMessage(appMessages.EMAIL_NOT_UNIQUE), null)
+                return sendErrorData(appMessages.EMAIL_NOT_UNIQUE)
             }
 
             val password = signUpRequestModel.password
