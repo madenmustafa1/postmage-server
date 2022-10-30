@@ -27,13 +27,21 @@ class UserPostsService(
         body: AddPostModel,
         addPostType: PostType
     ): ResponseData<Boolean> {
+        //Find user following data
+        val userIdQuery = BasicDBObject("userId", userId)
+        var nameSurname = ""
+
+        mongoDB.getUserCollection.find(userIdQuery)
+            .forEach { nameSurname = it.nameSurname ?: "" }
+
         val model = GetUserPostModel(
             groupId = body.groupId,
             photoName = body.photoName,
             description = body.description,
             objectId = ObjectId.get().toString(),
             creationTime = body.creationTime,
-            userId = userId
+            userId = userId,
+            nameSurname = nameSurname
         )
         var isSuccess = false
 
@@ -146,6 +154,7 @@ class UserPostsService(
             .forEach { followingData.addAll(it.following) }
 
         val userIdList: ArrayList<String> = arrayListOf()
+        userIdList.add(userId)
         followingData.forEach { userIdList.add(it.userId) }
 
         //Get posts

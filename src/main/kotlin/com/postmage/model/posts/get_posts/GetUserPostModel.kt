@@ -14,5 +14,6 @@ data class GetUserPostModel(
     var likeUserId: ArrayList<String>? = null,
     var comment: ArrayList<UserCommentModel>? = null,
     var objectId: String? = null,
-    var userId: String? = null
+    var userId: String? = null,
+    var nameSurname: String? = null
 )
