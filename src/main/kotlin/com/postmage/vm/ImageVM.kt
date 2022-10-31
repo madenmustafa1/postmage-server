@@ -19,7 +19,11 @@ class ImageVM(
 
     suspend fun downloadPhoto(call: ApplicationCall) {
         try {
-            val body = call.receive<DownloadPhotoRequestModel>()
+            val body = DownloadPhotoRequestModel(
+                photoName = call.request.queryParameters["photoName"]!!,
+                objectId = call.request.queryParameters["objectId"]!!
+            )
+
             val result = repository.downloadPhoto(call.request.headers["Authorization"]!!, body)
             result.data?.let {
                 call.respondFile(it)
