@@ -65,9 +65,14 @@ class UserPostsService(
 
     override suspend fun getMyPost(userId: String): ResponseData<List<GetUserPostModel>> {
         val query = BasicDBObject("userId", userId)
+        val sortDescQuery = BasicDBObject("creationTime", MongoSort.DESC)
         val userPostList = arrayListOf<GetUserPostModel>()
 
-        mongoDB.getUsersPostsCollection.find(query).forEach { userPostList.add(it) }
+        mongoDB
+            .getUsersPostsCollection
+            .find(query)
+            .sort(sortDescQuery)
+            .forEach { userPostList.add(it) }
 
         return ResponseData.success(userPostList)
     }
