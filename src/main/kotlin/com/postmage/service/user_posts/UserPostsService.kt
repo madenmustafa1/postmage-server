@@ -2,6 +2,7 @@ package com.postmage.service.user_posts
 
 import com.mongodb.BasicDBObject
 import com.mongodb.client.model.Filters.all
+import com.mongodb.client.model.Filters.`in`
 import com.postmage.enums.PostType
 import com.postmage.enums.StatusCodeUtil
 import com.postmage.model.group.GroupIdModel
@@ -15,8 +16,8 @@ import com.postmage.mongo_client.mongo_constants.MongoSort
 import com.postmage.repo.sendErrorData
 import com.postmage.service.ResponseData
 import com.postmage.util.AppMessages
-import com.postmage.vm.UserPostsVM
 import org.bson.types.ObjectId
+import org.litote.kmongo.find
 
 class UserPostsService(
     private val mongoDB: MongoInitialize,
@@ -162,14 +163,18 @@ class UserPostsService(
         userIdList.add(userId)
         followingData.forEach { userIdList.add(it.userId) }
 
+        //Example Value -> { userId: { $in: ["635d730e82882a05b4598829", "633ddd71dde4000752533909"] } }
+
         //Get posts
         val sortDescQuery = BasicDBObject("creationTime", MongoSort.DESC)
         val userPostList = arrayListOf<GetUserPostModel>()
         mongoDB.getUsersPostsCollection
-            .find(all("userId", userIdList))
+            .find(`in`("userId", userIdList))
             .sort(sortDescQuery)
             .forEach { userPostList.add(it) }
 
         return ResponseData.success(userPostList)
     }
+
+
 }

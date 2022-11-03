@@ -19,5 +19,5 @@ data class UserProfileInfoModel(
     var password: String? = null,
     val following: ArrayList<SingleFollowerDataModel> = arrayListOf(),
     val followers: ArrayList<SingleFollowerDataModel> = arrayListOf(),
-    var creationTime: Long
+    var creationTime: Long? = null
 )

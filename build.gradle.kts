@@ -42,6 +42,7 @@ dependencies {
 
     // Inside the dependencies
     implementation("org.litote.kmongo:kmongo:$kmongo_version")
+    implementation("org.litote.kmongo:kmongo-coroutine:$kmongo_version")
 
     //val koin_ktor: String by project
     val koin_ktor: String = "3.2.2"
@@ -61,7 +62,7 @@ dependencies {
     testImplementation("io.insert-koin:koin-test:$koin_version")
     implementation("io.insert-koin:koin-ksp-compiler-jvm:1.0.3")
 
-    implementation("com.google.code.gson:gson:2.9.0")
+    implementation("com.google.code.gson:gson:2.10")
 
     implementation("at.favre.lib:bcrypt:0.9.0")
 }

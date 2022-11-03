@@ -180,8 +180,11 @@ class UserPostsVM(
 
     suspend fun postOfFollowedUsers(call: ApplicationCall) {
         try {
-            val body = call.receive<PostOfFollowedUsers>()
-            val result = repository.postOfFollowedUsers(call.request.headers["Authorization"]!!, body)
+            var body: PostOfFollowedUsers? = null
+            kotlin.runCatching { body = call.receiveNullable<PostOfFollowedUsers>() }.getOrNull()
+            //var body= call.receiveOrNull<PostOfFollowedUsers>()
+            if (body == null) body = PostOfFollowedUsers(limit = 100)
+            val result = repository.postOfFollowedUsers(call.request.headers["Authorization"]!!, body!!)
 
             result.data?.let {
                 call.respond(it)
@@ -202,6 +205,7 @@ class UserPostsVM(
                 errorMessage = koin.appMessages.UNAUTHORIZED
             )
         } catch (e: Exception) {
+            println(e)
             sendException(
                 call = call,
                 statusCode = StatusCodeUtil.SERVER_ERROR,
@@ -209,6 +213,4 @@ class UserPostsVM(
             )
         }
     }
-
-
 }

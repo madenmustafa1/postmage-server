@@ -22,13 +22,11 @@ suspend fun accessManager(call: ApplicationCall, vararg role: AppUserRole, acces
 }
 
 
-private fun sendAuthStatus(call: ApplicationCall) {
-    CoroutineScope(Dispatchers.Unconfined).launch {
-        call.response.status(HttpStatusCode.Unauthorized)
-        call.respond(
-            GsonUtil.gsonToJson(
-                sendErrorData<ErrorMessage>(koin.appMessages.UNAUTHORIZED),
-            ),
-        )
-    }
+private suspend fun sendAuthStatus(call: ApplicationCall) {
+    call.response.status(HttpStatusCode.Unauthorized)
+    call.respond(
+        GsonUtil.gsonToJson(
+            sendErrorData<ErrorMessage>(koin.appMessages.UNAUTHORIZED),
+        ),
+    )
 }

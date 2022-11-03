@@ -20,6 +20,7 @@ class ProfileService(
         var result: ResponseData<UserProfileInfoModel?>? = null
 
         collection.find(query).limit(1).forEach {
+            it.password = null
             result = ResponseData.success(it)
         }
         result?.let { return it }
@@ -34,7 +35,7 @@ class ProfileService(
         var result: ResponseData<Boolean>? = null
 
         collection.find(query).limit(1).forEach {
-            body.groups?.let { group -> it.groups = group }
+            body.groups?.let { group -> it.groups?.addAll(group)  }
             body.gender?.let { gender -> it.gender = gender }
             body.phoneNumber?.let { phoneNumber -> it.phoneNumber = phoneNumber }
             body.nameSurname?.let { nameSurname -> it.nameSurname = nameSurname }
