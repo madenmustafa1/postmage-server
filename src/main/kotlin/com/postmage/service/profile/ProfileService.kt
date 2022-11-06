@@ -3,6 +3,7 @@ package com.postmage.service.profile
 import com.mongodb.BasicDBObject
 import com.postmage.model.profile.user.GetFollowersDataModel
 import com.postmage.model.profile.user.SetFollowersDataModel
+import com.postmage.model.profile.user.SingleFollowerDataModel
 import com.postmage.mongo_client.MongoInitialize
 import com.postmage.model.profile.user.UserProfileInfoModel
 import com.postmage.repo.sendErrorData
@@ -83,12 +84,12 @@ class ProfileService(
         collection.find(query).limit(1).forEach { model ->
             body.followers?.let { followers ->
                 model.followers.removeIf { model.userId == followers.userId }
-                model.followers.add(followers)
+                model.followers.add(SingleFollowerDataModel(userId = userId))
             }
 
             body.following?.let { following ->
                 model.following.removeIf { model.userId == following.userId }
-                model.following.add(following)
+                model.following.add(SingleFollowerDataModel(userId = userId))
             }
 
             collection.replaceOne(query, model)

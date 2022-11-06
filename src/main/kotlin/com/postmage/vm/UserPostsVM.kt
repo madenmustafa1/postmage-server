@@ -205,7 +205,6 @@ class UserPostsVM(
                 errorMessage = koin.appMessages.UNAUTHORIZED
             )
         } catch (e: Exception) {
-            println(e)
             sendException(
                 call = call,
                 statusCode = StatusCodeUtil.SERVER_ERROR,

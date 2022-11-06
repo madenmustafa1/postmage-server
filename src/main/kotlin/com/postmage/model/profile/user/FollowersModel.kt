@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class SingleFollowerDataModel(
-    val nameSurname: String,
+    val nameSurname: String? = null,
     val userId: String,
     val photoUrl: String? = null
 )
