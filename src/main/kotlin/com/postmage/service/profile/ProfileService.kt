@@ -84,12 +84,12 @@ class ProfileService(
         collection.find(query).limit(1).forEach { model ->
             body.followers?.let { followers ->
                 model.followers.removeIf { model.userId == followers.userId }
-                model.followers.add(SingleFollowerDataModel(userId = userId))
+                model.followers.add(SingleFollowerDataModel(userId = followers.userId))
             }
 
             body.following?.let { following ->
                 model.following.removeIf { model.userId == following.userId }
-                model.following.add(SingleFollowerDataModel(userId = userId))
+                model.following.add(SingleFollowerDataModel(userId = following.userId))
             }
 
             collection.replaceOne(query, model)
