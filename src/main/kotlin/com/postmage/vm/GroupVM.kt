@@ -79,7 +79,6 @@ class GroupVM(
         }
     }
 
-
     suspend fun usersToGroup(call: ApplicationCall, requestType: UsersToGroupRequestType) {
         try {
             val body = call.receive<UsersToGroupModel>()

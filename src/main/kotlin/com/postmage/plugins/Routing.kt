@@ -82,7 +82,7 @@ fun Application.configureRouting() {
                     }
                 }
 
-                get(GROUP_POSTS) {
+                post(GROUP_POSTS) {
                     accessManager(call, role = userRouteRole().toTypedArray()) {
                         koin.usersPostsVM.getGroupPost(call)
                     }

@@ -23,5 +23,5 @@ data class GroupUsersModel(
 
 @Serializable
 data class GroupIdModel(
-    val groupId: String? = ""
+    val groupId: ArrayList<String?>? = arrayListOf()
 )

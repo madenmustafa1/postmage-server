@@ -79,11 +79,13 @@ class UserPostsService(
     }
 
     override suspend fun getGroupPost(userId: String, body: GroupIdModel): ResponseData<List<GetUserPostModel>> {
-        val query = BasicDBObject("groupId", body.groupId!!)
+        //val query = BasicDBObject("groupId", body.groupId!!)
         var isSuccess = false
 
         //Get <Group> collection
-        mongoDB.getGroupsCollection.find(query).limit(1).forEach { groupModel ->
+        mongoDB.getGroupsCollection
+            .find(`in`("groupId", body.groupId!!))
+            .forEach { groupModel ->
             //Users Control
             for (i in groupModel.groupUsers) {
                 if (i.id == userId) {
@@ -103,7 +105,7 @@ class UserPostsService(
         val postList = arrayListOf<GetUserPostModel>()
         mongoDB
             .getUsersPostsCollection
-            .find(query)
+            .find(`in`("groupId", body.groupId!!))
             .sort(sortDescQuery)
             .forEach { postList.add(it) }
 
@@ -175,6 +177,4 @@ class UserPostsService(
 
         return ResponseData.success(userPostList)
     }
-
-
 }
