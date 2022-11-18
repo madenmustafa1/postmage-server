@@ -37,6 +37,7 @@ fun Application.configureRouting() {
                         koin.profileVM.getMyProfileInfo(call)
                     }
                 }
+
                 put(MY_PROFILE) {
                     accessManager(call, role = userRouteRole().toTypedArray()) {
                         koin.profileVM.putMyProfileInfo(call)
@@ -118,6 +119,12 @@ fun Application.configureRouting() {
                 put(REMOVE_USERS_GROUP) {
                     accessManager(call, role = userRouteRole().toTypedArray()) {
                         koin.groupVM.usersToGroup(call, GroupVM.UsersToGroupRequestType.REMOVE)
+                    }
+                }
+
+                get(MY_GROUP_LIST) {
+                    accessManager(call, role = userRouteRole().toTypedArray()) {
+                        koin.groupVM.getMyGroupList(call)
                     }
                 }
             }

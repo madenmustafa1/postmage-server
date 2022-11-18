@@ -131,6 +131,47 @@ class GroupVM(
         }
     }
 
+    suspend fun getMyGroupList(call: ApplicationCall) {
+        try {
+            val result = repository.getMyGroupList(call.request.headers["Authorization"]!!)
+
+            result.data?.let {
+                call.respond(it)
+                call.response.status(HttpStatusCode.OK)
+                return
+            }
+            sendException(
+                call = call,
+                statusCode = result.message?.statusCode ?: 500,
+                errorMessage = result.message?.message ?: ""
+            )
+        } catch (e: NullPointerException) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.UNAUTHORIZED,
+                errorMessage = koin.appMessages.UNAUTHORIZED
+            )
+        } catch (e: MismatchedInputException) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.BAD_REQUEST,
+                errorMessage = koin.appMessages.MODEL_IS_NOT_VALID
+            )
+        } catch (e: CannotTransformContentToTypeException) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.BAD_REQUEST,
+                errorMessage = koin.appMessages.MODEL_IS_NOT_VALID
+            )
+        } catch (e: Exception) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.SERVER_ERROR,
+                errorMessage = koin.appMessages.SERVER_ERROR
+            )
+        }
+    }
+
     enum class UsersToGroupRequestType {
         ADD_USER,
         REMOVE,

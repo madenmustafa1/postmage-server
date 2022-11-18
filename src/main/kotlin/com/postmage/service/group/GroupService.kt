@@ -2,10 +2,8 @@ package com.postmage.service.group
 
 import com.mongodb.BasicDBObject
 import com.postmage.enums.StatusCodeUtil
-import com.postmage.model.group.UsersToGroupModel
-import com.postmage.model.group.CreateGroupRequestModel
-import com.postmage.model.group.GroupInfoModel
-import com.postmage.model.group.GroupUsersModel
+import com.postmage.model.group.*
+import com.postmage.model.profile.user.GetFollowersDataModel
 import com.postmage.mongo_client.MongoInitialize
 import com.postmage.repo.sendErrorData
 import com.postmage.service.ResponseData
@@ -169,5 +167,31 @@ class GroupService(
             appMessages.ACCESS_DENIED,
             statusCode = StatusCodeUtil.FORBIDDEN
         )
+    }
+
+    override suspend fun getMyGroupList(userId: String): ResponseData<List<GetMyGroupListResponseModel>> {
+        val collection = mongoDB.getUserCollection
+        val query = BasicDBObject("userId", userId)
+
+        val groupList = arrayListOf<GetMyGroupListResponseModel>()
+        //Get <User> collection
+        collection.find(query).limit(1).forEach {
+            it.groups?.forEach { group ->
+                val groupUsersId = arrayListOf<String>()
+                for (i in group.groupUsers) groupUsersId.add(i.id)
+
+                groupList.add(
+                    GetMyGroupListResponseModel(
+                        groupName = group.groupName,
+                        photoName = group.photoName,
+                        groupUsersId = groupUsersId,
+                        isAdmin = group.adminIds.contains(userId),
+                        totalUser = group.groupUsers.size
+                    )
+                )
+            }
+        }
+
+        return ResponseData.success(groupList)
     }
 }

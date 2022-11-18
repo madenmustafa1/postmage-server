@@ -21,7 +21,7 @@ class ImageVM(
         try {
             val body = DownloadPhotoRequestModel(
                 photoName = call.request.queryParameters["photoName"]!!,
-                objectId = call.request.queryParameters["objectId"]!!
+                objectId = call.request.queryParameters["objectId"],
             )
 
             val result = repository.downloadPhoto(call.request.headers["Authorization"]!!, body)

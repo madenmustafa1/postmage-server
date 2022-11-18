@@ -19,11 +19,14 @@ class ImageService(
         val photoDir = File(Directory.userDesktopDir?.path, body.photoName)
 
         if (withContext(Dispatchers.IO) { photoDir.isFile }) {
-            val query = BasicDBObject("objectId", body.objectId)
-
-            repeat(mongoDB.getUsersPostsCollection.find(query).limit(1).count()) {
-                return ResponseData.success(photoDir)
+            if (body.objectId != null) {
+                val query = BasicDBObject("objectId", body.objectId)
+                repeat(mongoDB.getUsersPostsCollection.find(query).limit(1).count()) {
+                    return ResponseData.success(photoDir)
+                }
             }
+            else return ResponseData.success(photoDir)
+
         } else return sendErrorData(appMessages.PHOTO_NOT_FOUND)
 
         return sendErrorData(appMessages.ACCESS_DENIED)

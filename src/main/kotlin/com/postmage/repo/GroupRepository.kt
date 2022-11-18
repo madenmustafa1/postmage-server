@@ -5,6 +5,7 @@ import com.postmage.extensions.authToDataClass
 import com.postmage.extensions.writePhotoToDisk
 import com.postmage.model.group.UsersToGroupModel
 import com.postmage.model.group.CreateGroupRequestModel
+import com.postmage.model.group.GetMyGroupListResponseModel
 import com.postmage.model.group.GroupInfoModel
 import com.postmage.service.ResponseData
 import com.postmage.service.group.GroupInterface
@@ -14,7 +15,7 @@ import com.postmage.util.AppMessages
 class GroupRepository(
     private val groupService: GroupService,
     private val appMessages: AppMessages
-): GroupInterface {
+) : GroupInterface {
     override suspend fun createGroup(userId: String, body: CreateGroupRequestModel): ResponseData<GroupInfoModel> {
         if (body.photoBytes == null) return sendErrorData(
             appMessages.PHOTO_CANNOT_BE_EMPTY,
@@ -62,5 +63,9 @@ class GroupRepository(
             statusCode = StatusCodeUtil.BAD_REQUEST,
         )
         return groupService.addAdminToGroup(userId.authToDataClass()!!.userId, body)
+    }
+
+    override suspend fun getMyGroupList(userId: String): ResponseData<List<GetMyGroupListResponseModel>> {
+        return groupService.getMyGroupList(userId.authToDataClass()!!.userId)
     }
 }
