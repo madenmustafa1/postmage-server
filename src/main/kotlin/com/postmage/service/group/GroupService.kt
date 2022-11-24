@@ -3,7 +3,6 @@ package com.postmage.service.group
 import com.mongodb.BasicDBObject
 import com.postmage.enums.StatusCodeUtil
 import com.postmage.model.group.*
-import com.postmage.model.profile.user.GetFollowersDataModel
 import com.postmage.mongo_client.MongoInitialize
 import com.postmage.repo.sendErrorData
 import com.postmage.service.ResponseData
@@ -186,12 +185,43 @@ class GroupService(
                         photoName = group.photoName,
                         groupUsersId = groupUsersId,
                         isAdmin = group.adminIds.contains(userId),
-                        totalUser = group.groupUsers.size
+                        totalUser = group.groupUsers.size,
+                        groupId = group.groupId ?: ""
                     )
                 )
             }
         }
 
         return ResponseData.success(groupList)
+    }
+
+    override suspend fun getMyGroupInfo(userId: String, groupId: String): ResponseData<List<GroupUsersModel>> {
+        val userCollection = mongoDB.getUserCollection
+
+        val groupCollection = mongoDB.getGroupsCollection
+        val groupQuery = BasicDBObject("groupId", groupId)
+
+        val groupUsersModel = arrayListOf<GroupUsersModel>()
+
+        //Get <Group> collection
+        groupCollection.find(groupQuery).limit(1).forEach {
+            it.groupUsers.forEach { groupUser ->
+                //Get <User> collection
+                val userQuery = BasicDBObject("userId", groupUser.id)
+
+                userCollection.find(userQuery).limit(1).forEach { user ->
+                    groupUsersModel.add(
+                        GroupUsersModel(
+                            name = user.nameSurname ?: "",
+                            id = user.userId ?: "",
+                            profileUrl = user.profilePhotoUrl
+                        )
+                    )
+                }
+
+            }
+        }
+
+        return ResponseData.success(groupUsersModel)
     }
 }

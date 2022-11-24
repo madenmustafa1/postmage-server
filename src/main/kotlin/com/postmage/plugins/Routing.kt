@@ -21,6 +21,7 @@ fun Application.configureRouting() {
 
     with(HttpRoute) {
         routing {
+
             get("/") { call.respondText("Hi!") }
 
             //Login
@@ -127,6 +128,13 @@ fun Application.configureRouting() {
                         koin.groupVM.getMyGroupList(call)
                     }
                 }
+
+                get(MY_GROUP_INFO) {
+                    accessManager(call, role = userRouteRole().toTypedArray()) {
+                        koin.groupVM.getMyGroupInfo(call)
+                    }
+                }
+
             }
 
             //Image

@@ -33,6 +33,7 @@ object HttpRoute {
     const val ADD_ADMIN_GROUP = "/add-admin-to-group"
     const val REMOVE_USERS_GROUP = "/remove-users-to-group"
     const val MY_GROUP_LIST = "/my-group-list"
+    const val MY_GROUP_INFO = "/my-group-info"
 
     //Image
     const val IMAGE = "/image"

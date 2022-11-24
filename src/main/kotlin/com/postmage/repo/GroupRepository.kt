@@ -3,10 +3,7 @@ package com.postmage.repo
 import com.postmage.enums.StatusCodeUtil
 import com.postmage.extensions.authToDataClass
 import com.postmage.extensions.writePhotoToDisk
-import com.postmage.model.group.UsersToGroupModel
-import com.postmage.model.group.CreateGroupRequestModel
-import com.postmage.model.group.GetMyGroupListResponseModel
-import com.postmage.model.group.GroupInfoModel
+import com.postmage.model.group.*
 import com.postmage.service.ResponseData
 import com.postmage.service.group.GroupInterface
 import com.postmage.service.group.GroupService
@@ -67,5 +64,17 @@ class GroupRepository(
 
     override suspend fun getMyGroupList(userId: String): ResponseData<List<GetMyGroupListResponseModel>> {
         return groupService.getMyGroupList(userId.authToDataClass()!!.userId)
+    }
+
+    override suspend fun getMyGroupInfo(userId: String, groupId: String): ResponseData<List<GroupUsersModel>> {
+        if (userId.isEmpty()) return sendErrorData(
+            appMessages.USER_ID_NOT_BE_NULL,
+            statusCode = StatusCodeUtil.BAD_REQUEST,
+        )
+        if (groupId.isEmpty()) return sendErrorData(
+            appMessages.GROUP_ID_NOT_BE_NULL,
+            statusCode = StatusCodeUtil.BAD_REQUEST,
+        )
+        return groupService.getMyGroupInfo(userId.authToDataClass()!!.userId, groupId)
     }
 }

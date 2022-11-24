@@ -30,5 +30,4 @@ class AppMessages {
     val PHOTO_NAME_CANNOT_BE_EMPTY by lazy { "Photo name cannot be empty" }
     val PHOTO_NAME_NOT_UNIQUE by lazy { "Photo name already exits" }
     val PHOTO_NOT_FOUND by lazy { "Photo not found" }
-
 }
