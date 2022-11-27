@@ -47,7 +47,7 @@ class GroupRepository(
     }
 
     override suspend fun removeUsersToGroup(userId: String, body: UsersToGroupModel): ResponseData<Boolean> {
-        if (userId == body.id) return sendErrorData(
+        if (userId.authToDataClass()!!.userId == body.id) return sendErrorData(
             appMessages.WRONG_USER_ID,
             statusCode = StatusCodeUtil.BAD_REQUEST,
         )
