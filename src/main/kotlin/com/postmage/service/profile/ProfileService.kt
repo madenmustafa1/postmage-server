@@ -1,6 +1,7 @@
 package com.postmage.service.profile
 
 import com.mongodb.BasicDBObject
+import com.postmage.model.group.GroupUsersModel
 import com.postmage.model.profile.user.GetFollowersDataModel
 import com.postmage.model.profile.user.SetFollowersDataModel
 import com.postmage.model.profile.user.SingleFollowerDataModel
@@ -36,7 +37,7 @@ class ProfileService(
         var result: ResponseData<Boolean>? = null
 
         collection.find(query).limit(1).forEach {
-            body.groups?.let { group -> it.groups?.addAll(group)  }
+            body.groups?.let { group -> it.groups?.addAll(group) }
             body.gender?.let { gender -> it.gender = gender }
             body.phoneNumber?.let { phoneNumber -> it.phoneNumber = phoneNumber }
             body.nameSurname?.let { nameSurname -> it.nameSurname = nameSurname }
@@ -54,22 +55,51 @@ class ProfileService(
     override suspend fun getMyFollowerData(
         userId: String
     ): ResponseData<GetFollowersDataModel> {
+        val userCollection = mongoDB.getUserCollection
         val collection = mongoDB.getUserCollection
         val query = BasicDBObject("userId", userId)
 
-        var result: ResponseData<GetFollowersDataModel>? = null
+        val following: ArrayList<SingleFollowerDataModel> = arrayListOf()
+        val followers: ArrayList<SingleFollowerDataModel> = arrayListOf()
 
         collection.find(query).limit(1).forEach {
-            result = ResponseData.success(
-                GetFollowersDataModel(
-                    following = it.following,
-                    followers = it.followers,
-                )
-            )
-        }
-        result?.let { return it }
+            it.following.forEach { otherUser ->
+                //Get <User> collection
+                val userQuery = BasicDBObject("userId", otherUser.userId)
 
-        return sendErrorData(appMessages.USER_ID_NOT_BE_NULL)
+                userCollection.find(userQuery).limit(1).forEach { user ->
+                    following.add(
+                        SingleFollowerDataModel(
+                            nameSurname = user.nameSurname ?: "",
+                            userId = user.userId ?: "",
+                            photoUrl = user.profilePhotoUrl
+                        )
+                    )
+                }
+            }
+
+            it.followers.forEach { otherUser ->
+                //Get <User> collection
+                val userQuery = BasicDBObject("userId", otherUser.userId)
+
+                userCollection.find(userQuery).limit(1).forEach { user ->
+                    followers.add(
+                        SingleFollowerDataModel(
+                            nameSurname = user.nameSurname ?: "",
+                            userId = user.userId ?: "",
+                            photoUrl = user.profilePhotoUrl
+                        )
+                    )
+                }
+            }
+        }
+
+        return ResponseData.success(
+            GetFollowersDataModel(
+                following = following,
+                followers = followers,
+            )
+        )
     }
 
     override suspend fun putMyFollowerData(
