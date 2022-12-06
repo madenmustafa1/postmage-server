@@ -15,5 +15,6 @@ data class GetUserPostModel(
     var comment: ArrayList<UserCommentModel>? = null,
     var objectId: String? = null,
     var userId: String? = null,
-    var nameSurname: String? = null
+    var nameSurname: String? = null,
+    var groupName: String? = null
 )

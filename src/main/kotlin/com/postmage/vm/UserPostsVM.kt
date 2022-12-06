@@ -114,6 +114,40 @@ class UserPostsVM(
         }
     }
 
+    suspend fun getPost(call: ApplicationCall) {
+        try {
+            val result = repository.getPost(
+                call.request.headers["Authorization"] ?: "",
+                call.request.queryParameters["postId"] ?: ""
+            )
+
+            result.data?.let {
+                call.respond(it)
+                call.response.status(HttpStatusCode.OK)
+                return
+            }
+
+            sendException(
+                call = call,
+                statusCode = result.message?.statusCode ?: 500,
+                errorMessage = result.message?.message ?: ""
+            )
+
+        } catch (e: NullPointerException) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.UNAUTHORIZED,
+                errorMessage = koin.appMessages.UNAUTHORIZED
+            )
+        } catch (e: Exception) {
+            sendException(
+                call = call,
+                statusCode = StatusCodeUtil.SERVER_ERROR,
+                errorMessage = appMessages.SERVER_ERROR
+            )
+        }
+    }
+
     suspend fun updatePost(call: ApplicationCall) {
         try {
             val body = call.receive<UpdateUserPostModel>()
@@ -212,4 +246,6 @@ class UserPostsVM(
             )
         }
     }
+
+
 }

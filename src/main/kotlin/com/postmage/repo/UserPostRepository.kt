@@ -80,6 +80,20 @@ class UserPostRepository(
         return userPostsService.getGroupPost(userId.authToDataClass()!!.userId, body)
     }
 
+    override suspend fun getPost(userId: String, postId: String?): ResponseData<GetUserPostModel> {
+        if (userId.isEmpty()) return sendErrorData(
+            appMessages.USER_ID_NOT_BE_NULL,
+            statusCode = StatusCodeUtil.BAD_REQUEST
+        )
+
+        if (postId.isNullOrEmpty()) return sendErrorData(
+            appMessages.POST_NOT_FOUND,
+            statusCode = StatusCodeUtil.BAD_REQUEST
+        )
+
+        return userPostsService.getPost(userId.authToDataClass()!!.userId, postId)
+    }
+
     override suspend fun updatePost(userId: String, body: UpdateUserPostModel): ResponseData<GetUserPostModel> {
         if (body.objectId.isNullOrEmpty()) return sendErrorData(
             appMessages.WRONG_USER_ID,

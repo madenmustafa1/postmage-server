@@ -60,6 +60,12 @@ fun Application.configureRouting() {
 
             //Posts
             route(POSTS) {
+                get(POST) {
+                    accessManager(call, role = userRouteRole().toTypedArray()) {
+                        koin.usersPostsVM.getPost(call)
+                    }
+                }
+
                 post(ADD_POSTS) {
                     accessManager(call, role = userRouteRole().toTypedArray()) {
                         koin.usersPostsVM.addPost(call)

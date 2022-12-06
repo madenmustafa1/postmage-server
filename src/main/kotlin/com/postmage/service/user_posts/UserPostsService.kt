@@ -80,25 +80,6 @@ class UserPostsService(
 
     override suspend fun getGroupPost(userId: String, body: GroupIdModel): ResponseData<List<GetUserPostModel>> {
         //val query = BasicDBObject("groupId", body.groupId!!)
-        var isSuccess = false
-
-        //Get <Group> collection
-        mongoDB.getGroupsCollection
-            .find(`in`("groupId", body.groupId!!))
-            .forEach { groupModel ->
-            //Users Control
-            for (i in groupModel.groupUsers) {
-                if (i.id == userId) {
-                    isSuccess = true
-                    break
-                }
-            }
-        }
-
-        if (!isSuccess) return sendErrorData(
-            appMessages.ACCESS_DENIED,
-            StatusCodeUtil.FORBIDDEN
-        )
 
         //Get <UsersPosts> collection
         val sortDescQuery = BasicDBObject("creationTime", MongoSort.DESC)
@@ -107,9 +88,45 @@ class UserPostsService(
             .getUsersPostsCollection
             .find(`in`("groupId", body.groupId!!))
             .sort(sortDescQuery)
-            .forEach { postList.add(it) }
+            .forEach {
+
+                //Get <Group> collection
+                mongoDB.getGroupsCollection
+                    .find(`in`("groupId", it.groupId))
+                    .forEach { groupModel ->
+                        //Users Control
+                        for (i in groupModel.groupUsers) {
+                            it.groupName = groupModel.groupName
+                            if (i.id == userId) {
+                                postList.add(it)
+                            }
+                        }
+                    }
+            }
 
         return ResponseData.success(postList)
+    }
+
+    override suspend fun getPost(userId: String, postId: String?): ResponseData<GetUserPostModel> {
+        //Get <UsersPosts> collection
+        val findQuery = BasicDBObject("objectId", postId!!)
+        val sortDescQuery = BasicDBObject("creationTime", MongoSort.DESC)
+
+        var model: GetUserPostModel? = null
+        mongoDB
+            .getUsersPostsCollection
+            .find(findQuery)
+            .sort(sortDescQuery)
+            .forEach { model = it }
+
+        model?.let {
+            return ResponseData.success(model)
+        }
+
+        return sendErrorData(
+            appMessages.POST_NOT_FOUND,
+            statusCode = StatusCodeUtil.BAD_REQUEST
+        )
     }
 
     override suspend fun updatePost(userId: String, body: UpdateUserPostModel): ResponseData<GetUserPostModel> {

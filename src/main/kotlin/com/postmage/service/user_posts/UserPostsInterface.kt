@@ -19,6 +19,7 @@ interface UserPostsInterface {
 
     suspend fun getMyPost(userId: String): ResponseData<List<GetUserPostModel>>
     suspend fun getGroupPost(userId: String, body: GroupIdModel): ResponseData<List<GetUserPostModel>>
+    suspend fun getPost(userId: String, postId: String?): ResponseData<GetUserPostModel>
     suspend fun updatePost(userId: String, body: UpdateUserPostModel): ResponseData<GetUserPostModel>
     suspend fun postOfFollowedUsers(userId: String, body: PostOfFollowedUsers): ResponseData<List<GetUserPostModel>>
 
