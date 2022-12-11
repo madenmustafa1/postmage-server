@@ -6,6 +6,7 @@ import com.postmage.model.posts.add_posts.AddPostModel
 import com.postmage.model.posts.followed_users.PostOfFollowedUsers
 import com.postmage.model.posts.get_posts.GetUserPostModel
 import com.postmage.model.posts.update_posts.UpdateUserPostModel
+import com.postmage.model.posts.update_posts.UserCommentModel
 import com.postmage.service.ResponseData
 import com.postmage.vm.UserPostsVM
 
@@ -20,6 +21,7 @@ interface UserPostsInterface {
     suspend fun getMyPost(userId: String): ResponseData<List<GetUserPostModel>>
     suspend fun getGroupPost(userId: String, body: GroupIdModel): ResponseData<List<GetUserPostModel>>
     suspend fun getPost(userId: String, postId: String?): ResponseData<GetUserPostModel>
+    suspend fun getComments(userId: String, postId: String?): ResponseData<ArrayList<UserCommentModel>?>
     suspend fun updatePost(userId: String, body: UpdateUserPostModel): ResponseData<GetUserPostModel>
     suspend fun postOfFollowedUsers(userId: String, body: PostOfFollowedUsers): ResponseData<List<GetUserPostModel>>
 

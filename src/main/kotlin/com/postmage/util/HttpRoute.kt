@@ -18,6 +18,7 @@ object HttpRoute {
     //Posts
     const val POSTS = "/user-posts"
     const val POST = "/get-post"
+    const val COMMENTS = "/get-comments"
     const val MY_POSTS = "/my-posts"
     const val GROUP_POSTS = "/group-posts"
     const val ADD_POSTS = "/add-posts"

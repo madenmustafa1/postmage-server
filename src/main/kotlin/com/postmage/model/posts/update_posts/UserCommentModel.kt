@@ -6,6 +6,8 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class UserCommentModel(
     val userId: String,
-    val comment: String,
+    val comment: String = "",
+    var photoName: String? = "",
+    var nameSurname: String? = "",
     val creationTime: Long = DateUtil.getTimeNow()
 )

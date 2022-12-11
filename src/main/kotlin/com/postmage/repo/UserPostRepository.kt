@@ -9,6 +9,7 @@ import com.postmage.model.posts.add_posts.AddPostModel
 import com.postmage.model.posts.followed_users.PostOfFollowedUsers
 import com.postmage.model.posts.get_posts.GetUserPostModel
 import com.postmage.model.posts.update_posts.UpdateUserPostModel
+import com.postmage.model.posts.update_posts.UserCommentModel
 import com.postmage.service.ResponseData
 import com.postmage.service.user_posts.UserPostsInterface
 import com.postmage.service.user_posts.UserPostsService
@@ -92,6 +93,20 @@ class UserPostRepository(
         )
 
         return userPostsService.getPost(userId.authToDataClass()!!.userId, postId)
+    }
+
+    override suspend fun getComments(userId: String, postId: String?): ResponseData<ArrayList<UserCommentModel>?> {
+        if (userId.isEmpty()) return sendErrorData(
+            appMessages.USER_ID_NOT_BE_NULL,
+            statusCode = StatusCodeUtil.BAD_REQUEST
+        )
+
+        if (postId.isNullOrEmpty()) return sendErrorData(
+            appMessages.POST_NOT_FOUND,
+            statusCode = StatusCodeUtil.BAD_REQUEST
+        )
+
+        return userPostsService.getComments(userId.authToDataClass()!!.userId, postId)
     }
 
     override suspend fun updatePost(userId: String, body: UpdateUserPostModel): ResponseData<GetUserPostModel> {

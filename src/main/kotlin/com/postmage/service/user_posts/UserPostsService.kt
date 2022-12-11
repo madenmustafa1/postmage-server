@@ -1,7 +1,6 @@
 package com.postmage.service.user_posts
 
 import com.mongodb.BasicDBObject
-import com.mongodb.client.model.Filters.all
 import com.mongodb.client.model.Filters.`in`
 import com.postmage.enums.PostType
 import com.postmage.enums.StatusCodeUtil
@@ -10,6 +9,7 @@ import com.postmage.model.posts.add_posts.AddPostModel
 import com.postmage.model.posts.followed_users.PostOfFollowedUsers
 import com.postmage.model.posts.get_posts.GetUserPostModel
 import com.postmage.model.posts.update_posts.UpdateUserPostModel
+import com.postmage.model.posts.update_posts.UserCommentModel
 import com.postmage.model.profile.user.SingleFollowerDataModel
 import com.postmage.mongo_client.MongoInitialize
 import com.postmage.mongo_client.mongo_constants.MongoSort
@@ -17,7 +17,6 @@ import com.postmage.repo.sendErrorData
 import com.postmage.service.ResponseData
 import com.postmage.util.AppMessages
 import org.bson.types.ObjectId
-import org.litote.kmongo.find
 
 class UserPostsService(
     private val mongoDB: MongoInitialize,
@@ -121,6 +120,42 @@ class UserPostsService(
 
         model?.let {
             return ResponseData.success(model)
+        }
+
+        return sendErrorData(
+            appMessages.POST_NOT_FOUND,
+            statusCode = StatusCodeUtil.BAD_REQUEST
+        )
+    }
+
+    override suspend fun getComments(userId: String, postId: String?): ResponseData<ArrayList<UserCommentModel>?> {
+        //Get <UsersPosts> collection
+        val findQuery = BasicDBObject("objectId", postId!!)
+        val sortDescQuery = BasicDBObject("creationTime", MongoSort.DESC)
+
+        var userPostModel: GetUserPostModel? = null
+
+        //Find post
+        mongoDB
+            .getUsersPostsCollection
+            .find(findQuery)
+            .limit(1)
+            .sort(sortDescQuery)
+            .forEach { userPostModel = it }
+
+        val userCommentList: ArrayList<UserCommentModel> = arrayListOf()
+        userPostModel?.let { userPost ->
+            userPost.comment?.forEach { comment ->
+                //Find user
+                val userCollection = mongoDB.getUserCollection
+                val userQuery = BasicDBObject("userId", comment.userId)
+                userCollection.find(userQuery).limit(1).forEach { user ->
+                    comment.photoName = user.profilePhotoUrl ?: ""
+                    comment.nameSurname = user.nameSurname ?: ""
+                    userCommentList.add(comment)
+                }
+            }
+            return ResponseData.success(userCommentList)
         }
 
         return sendErrorData(

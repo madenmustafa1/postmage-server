@@ -66,6 +66,12 @@ fun Application.configureRouting() {
                     }
                 }
 
+                get(COMMENTS) {
+                    accessManager(call, role = userRouteRole().toTypedArray()) {
+                        koin.usersPostsVM.getComments(call)
+                    }
+                }
+
                 post(ADD_POSTS) {
                     accessManager(call, role = userRouteRole().toTypedArray()) {
                         koin.usersPostsVM.addPost(call)
