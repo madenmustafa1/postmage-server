@@ -218,7 +218,6 @@ class UserPostsService(
         followingData.forEach { userIdList.add(it.userId) }
 
         //Example Value -> { userId: { $in: ["635d730e82882a05b4598829", "633ddd71dde4000752533909"] } }
-
         //Get posts
         val sortDescQuery = BasicDBObject("creationTime", MongoSort.DESC)
         val userPostList = arrayListOf<GetUserPostModel>()
