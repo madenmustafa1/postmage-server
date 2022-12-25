@@ -2,11 +2,8 @@ package com.postmage.service.profile
 
 import com.mongodb.BasicDBObject
 import com.postmage.model.group.GroupUsersModel
-import com.postmage.model.profile.user.GetFollowersDataModel
-import com.postmage.model.profile.user.SetFollowersDataModel
-import com.postmage.model.profile.user.SingleFollowerDataModel
+import com.postmage.model.profile.user.*
 import com.postmage.mongo_client.MongoInitialize
-import com.postmage.model.profile.user.UserProfileInfoModel
 import com.postmage.repo.sendErrorData
 import com.postmage.service.ResponseData
 import com.postmage.util.AppMessages
@@ -129,5 +126,21 @@ class ProfileService(
         result?.let { return it }
 
         return sendErrorData(appMessages.USER_ID_NOT_BE_NULL)
+    }
+
+    override suspend fun putMyProfilePhoto(userId: String, body: UpdateProfilePhotoModel): ResponseData<Boolean> {
+        val query = BasicDBObject("userId", userId)
+        var isSuccess = false
+
+        mongoDB.getUserCollection.find(query)
+            .limit(1).forEach { model ->
+                if (model.userId != userId) return@forEach
+
+                model.profilePhotoUrl = body.photoName
+                mongoDB.getUserCollection.replaceOne(query, model)
+                isSuccess = true
+            }
+
+        return ResponseData.success(isSuccess)
     }
 }

@@ -56,6 +56,12 @@ fun Application.configureRouting() {
                         koin.profileVM.putMyFollowerData(call)
                     }
                 }
+
+                put(PROFILE_PHOTO) {
+                    accessManager(call, role = userRouteRole().toTypedArray()) {
+                        koin.profileVM.putMyProfilePhoto(call)
+                    }
+                }
             }
 
             //Posts
