@@ -13,6 +13,8 @@ group = "com.postmage"
 version = "0.0.1"
 application {
     mainClass.set("io.ktor.server.netty.EngineMain")
+    //mainClass.set("com.postmage.ApplicationKt")
+
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
@@ -27,15 +29,20 @@ dependencies {
     implementation("io.ktor:ktor-server-websockets-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-content-negotiation-jvm:$ktor_version")
     implementation("io.ktor:ktor-serialization-kotlinx-json-jvm:$ktor_version")
-    implementation("io.ktor:ktor-server-call-logging-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-auth-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-auth-jwt-jvm:$ktor_version")
     implementation("io.ktor:ktor-server-netty-jvm:$ktor_version")
-    implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests-jvm:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
 
+    //SSL
+    //implementation("io.ktor:ktor-network-tls-certificates:$ktor_version")
+    //testImplementation("io.ktor:ktor-network-tls-certificates:$ktor_version")
+    //Auth
     implementation("io.ktor:ktor-server-auth:$ktor_version")
+    //Logger
+    implementation("io.ktor:ktor-server-call-logging-jvm:$ktor_version")
+    implementation("ch.qos.logback:logback-classic:$logback_version")
 
 
     val kmongo_version: String by project
@@ -62,7 +69,29 @@ dependencies {
     testImplementation("io.insert-koin:koin-test:$koin_version")
     implementation("io.insert-koin:koin-ksp-compiler-jvm:1.0.3")
 
+    //Gson & Json
     implementation("com.google.code.gson:gson:2.10")
-
+    //Bcrypt
     implementation("at.favre.lib:bcrypt:0.9.0")
+
+}
+
+ktor {
+    fatJar {
+        archiveFileName.set("fat.jar")
+    }
+
+    docker {
+        jreVersion.set(io.ktor.plugin.features.JreVersion.JRE_17)
+        localImageName.set("sample-docker-image")
+        imageTag.set("0.0.1-preview")
+
+        externalRegistry.set(
+            io.ktor.plugin.features.DockerImageRegistry.dockerHub(
+                appName = provider { "ktor-app" },
+                username = providers.environmentVariable("DOCKER_HUB_USERNAME"),
+                password = providers.environmentVariable("DOCKER_HUB_PASSWORD")
+            )
+        )
+    }
 }
