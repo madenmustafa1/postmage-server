@@ -5,7 +5,7 @@ val logback_version: String by project
 plugins {
     application
     kotlin("jvm") version "1.7.10"
-    id("io.ktor.plugin") version "2.1.1"
+    id("io.ktor.plugin") version "2.2.1"
     id("org.jetbrains.kotlin.plugin.serialization") version "1.7.10"
 }
 
@@ -83,14 +83,22 @@ ktor {
 
     docker {
         jreVersion.set(io.ktor.plugin.features.JreVersion.JRE_17)
-        localImageName.set("sample-docker-image")
-        imageTag.set("0.0.1-preview")
+        localImageName.set("postmage")
+        imageTag.set("0.0.1")
+
+        portMappings.set(listOf(
+            io.ktor.plugin.features.DockerPortMapping(
+                80,
+                8080,
+                io.ktor.plugin.features.DockerPortMappingProtocol.TCP
+            )
+        ))
 
         externalRegistry.set(
             io.ktor.plugin.features.DockerImageRegistry.dockerHub(
-                appName = provider { "ktor-app" },
-                username = providers.environmentVariable("DOCKER_HUB_USERNAME"),
-                password = providers.environmentVariable("DOCKER_HUB_PASSWORD")
+                appName = provider { "postmage" },
+                username = providers.environmentVariable("secret"),
+                password = providers.environmentVariable("secret")
             )
         )
     }
